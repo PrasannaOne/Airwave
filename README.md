@@ -1,22 +1,10 @@
 📻 AIRWAVE
 
-<p align="center">
+<h1 align="center">
   <a href="https://prasannaone.github.io/Airwave/">
-    <img src="https://img.shields.io/badge/🎧%20OPEN%20AIRWAVE%20%20→-7C3AED?style=for-the-badge" alt="🎧 OPEN AIRWAVE →">
+    ☝🏻 OPEN AIRWAVE · LISTEN LIVE
   </a>
-</p><p align="center">
-  <strong>Find your frequency. Your lil corner of radio.</strong>
-  <br>
-  Discover the world, one station at a time.
-</p>
-
-
-
-<p align="center">
-  <a href="https://prasannaone.github.io/Airwave/">
-    <img src="https://img.shields.io/badge/▶%20LISTEN%20LIVE-OPEN%20AIRWAVE-7C3AED?style=for-the-badge&labelColor=17112B" alt="Listen Live · Open Airwave">
-  </a>
-</p><p align="center">
+</h1><p align="center">
   <strong>Find your frequency. Your lil corner of radio.</strong>
   <br>
   Discover the world, one station at a time.
@@ -30,17 +18,11 @@
 
 Airwave brings thousands of radio stations from around the world into one place.
 
-Explore countries, discover languages and genres, revisit favourites, and find something unexpected.
+Explore different countries, discover new languages and genres, revisit your favourites, and find something unexpected.
 
 One place. Thousands of frequencies. Endless discoveries.
 
 ---
-
-<p align="center">
-  <a href="https://prasannaone.github.io/Airwave/">
-    <img src="https://img.shields.io/badge/🎧%20START%20LISTENING-EXPLORE%20AIRWAVE-7C3AED?style=for-the-badge&labelColor=17112B" alt="Start Listening">
-  </a>
-</p>
 
 ✨ FEATURES
 
@@ -51,14 +33,14 @@ Feature| What it does
 🗣️ Language Filter| Explore stations by language
 🎸 Genre Filter| Find stations by music genre
 ❤️ Favourites| Save stations you love
-🕘 Recently Played| Return to your recent stations
-🎲 Surprise Me| Discover a random station from your filtered results
+🕘 Recently Played| Return to recently played stations
+🎲 Surprise Me| Discover a random station from filtered results
 🎨 Custom Themes| Choose your preferred appearance
 📦 Import & Export| Back up and restore your favourites
 
 🎨 MAKE IT YOURS
 
-Airwave comes with five visual themes:
+Choose from five visual themes:
 
 - 🌌 Midnight Purple – The default Airwave experience.
 - 🖤 AMOLED Black – A darker look.
@@ -68,7 +50,7 @@ Airwave comes with five visual themes:
 
 🎧 HOW TO USE
 
-1. Open "Airwave" (https://prasannaone.github.io/Airwave/).
+1. Visit "Airwave" (https://prasannaone.github.io/Airwave/).
 2. Search for a station or explore the catalogue.
 3. Filter by country, language or genre.
 4. Select a station and start listening.
@@ -99,14 +81,9 @@ Airwave is designed as a standalone, mobile-friendly web application.
 
 Airwave is designed to work across modern mobile and desktop browsers.
 
-You can access it directly through the website without installing additional software.
-
-Live website:
-https://prasannaone.github.io/Airwave/
+Access it directly through the website without installing additional software.
 
 🗺️ PROJECT STRUCTURE
-
-The repository contains the web application and its supporting project documentation.
 
 Airwave/
 │
@@ -129,5 +106,7 @@ Made by Prasanna ❤️
   <br>
   Find your frequency.
   <br><br>
-  <a href="https://prasannaone.github.io/Airwave/"><strong>START LISTENING →</strong></a>
+  <a href="https://prasannaone.github.io/Airwave/">
+    <strong>☝🏻 VISIT AIRWAVE · START LISTENING</strong>
+  </a>
 </p>
