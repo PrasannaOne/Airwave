@@ -1,5 +1,16 @@
-
 📻 AIRWAVE
+
+<p align="center">
+  <a href="https://prasannaone.github.io/Airwave/">
+    <img src="https://img.shields.io/badge/🎧%20OPEN%20AIRWAVE%20%20→-7C3AED?style=for-the-badge" alt="🎧 OPEN AIRWAVE →">
+  </a>
+</p><p align="center">
+  <strong>Find your frequency. Your lil corner of radio.</strong>
+  <br>
+  Discover the world, one station at a time.
+</p>
+
+
 
 <p align="center">
   <a href="https://prasannaone.github.io/Airwave/">
