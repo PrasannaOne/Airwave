@@ -3,7 +3,7 @@
 
 <p align="center">
   <a href="https://prasannaone.github.io/Airwave/">
-    <strong>🌐 OPEN AIRWAVE · LISTEN NOW →</strong>
+    <img src="https://img.shields.io/badge/▶%20LISTEN%20LIVE-OPEN%20AIRWAVE-7C3AED?style=for-the-badge&labelColor=17112B" alt="Listen Live · Open Airwave">
   </a>
 </p><p align="center">
   <strong>Find your frequency. Your lil corner of radio.</strong>
@@ -13,18 +13,23 @@
   <img src="https://img.shields.io/badge/STATUS-LIVE-22C55E?style=for-the-badge" alt="Live">
   <img src="https://img.shields.io/badge/PLATFORM-WEB-8B5CF6?style=for-the-badge" alt="Web">
   <img src="https://img.shields.io/badge/STATIONS-63K%2B-6366F1?style=for-the-badge" alt="63K+ Stations">
-  <img src="https://img.shields.io/badge/BUILT_WITH-LOVE-EC4899?style=for-the-badge" alt="Built with love">
 </p>---
 
 🌍 THE WORLD ON AIR
 
-Airwave is a web-based internet radio player that brings thousands of radio stations from around the world into one place.
+Airwave brings thousands of radio stations from around the world into one place.
 
-Explore different countries, discover new languages and genres, revisit your favourite broadcasts, and find something unexpected.
-
-Whether you're looking for familiar sounds or discovering a station on the other side of the world, Airwave makes radio exploration simple.
+Explore countries, discover languages and genres, revisit favourites, and find something unexpected.
 
 One place. Thousands of frequencies. Endless discoveries.
+
+---
+
+<p align="center">
+  <a href="https://prasannaone.github.io/Airwave/">
+    <img src="https://img.shields.io/badge/🎧%20START%20LISTENING-EXPLORE%20AIRWAVE-7C3AED?style=for-the-badge&labelColor=17112B" alt="Start Listening">
+  </a>
+</p>
 
 ✨ FEATURES
 
