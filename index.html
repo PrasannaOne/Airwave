@@ -924,7 +924,9 @@ function saveBrowsePreferences() {
     language: $("language").value,
     genre: $("genre").value,
     sort: $("sort").value,
-    view
+    view,
+    theme: safeStorageGet("airwave-theme", "midnight"),
+    languageUI: ui
   }));
 }
 function restoreBrowsePreferences() {
@@ -1098,14 +1100,15 @@ function applyFilters() {
   if (view === "recent") {
     filtered.sort((a, b) => recent.indexOf(stationKey(a)) - recent.indexOf(stationKey(b)));
   } else if ($("sort").value === "country") {
-    filtered.sort((a, b) => stationCollator.compare(countryName(a.iso_3166_1), countryName(b.iso_3166_1)));
+    filtered.sort((a, b) => stationCollator.compare(countryName(a.iso_3166_1), countryName(b.iso_3166_1)) || stationCollator.compare(a.name || "", b.name || ""));
   } else if ($("sort").value === "random") {
     // Fisher-Yates shuffle avoids the slow and unstable random sort comparator.
     for (let i = filtered.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
       [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
     }
-  } else if (source !== stations) {
+  } else {
+    // The default Name: A–Z sort must apply to the full Explore catalogue too.
     filtered.sort((a, b) => stationCollator.compare(a.name || "", b.name || ""));
   }
 
