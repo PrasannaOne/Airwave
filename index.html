@@ -695,10 +695,36 @@ body[data-theme="forest"] {
 .track b, .track small { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #miniPlayerOpen { min-width: 0; }
 #miniCover, #trackname { cursor: pointer; }
+
+
+/* SMALL POLISH + CROSS-DEVICE TOUCH BEHAVIOUR */
+html, body, button, a, input, select, textarea, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, [role="button"] { touch-action: manipulation; }
+button:focus:not(:focus-visible), a:focus:not(:focus-visible), [role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.back-to-top {
+  z-index: 18;
+  pointer-events: none;
+}
+.back-to-top.visible { pointer-events: auto; }
+.back-to-top:active {
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface2));
+  transform: scale(.96);
+}
+.about-modal .settings-footer {
+  justify-content: flex-end !important;
+}
 </style></head>
 <body>
 <div class="app">
-<header class="header"><div class="brand"><div class="mark">〰</div><div><h1>Airwave<span style="color:var(--accent)">.</span></h1></div></div><div class="head-actions"><button class="iconbtn" id="settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6.3v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2H15v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1z</svg></button><button class="iconbtn" id="export" title="Export favourites"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v12"/><path d="m7 13 5-5 5 5"/><path d="M5 4h14"/></svg></button><button class="iconbtn" id="share" title="Share Airwave" aria-label="Share Airwave"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg></button></div></header>
+<header class="header"><div class="brand"><div class="mark">〰</div><div><h1>Airwave<span style="color:var(--accent)">.</span></h1></div></div><div class="head-actions"><button class="iconbtn" id="settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6.3v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2H15v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1z"/></svg></button><button class="iconbtn" id="share" title="Share Airwave" aria-label="Share Airwave"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg></button></div></header>
 <section class="hero"><h2>Find your frequency.</h2></section>
 <section class="controls">
 <label class="search"><span>⌕</span><input id="query" type="search" placeholder="Search stations, genres, countries…" autocomplete="off"></label>
@@ -889,6 +915,40 @@ function savePreferences() {
   safeStorageSet("airwave-hidden-records", JSON.stringify(hiddenStationRecords));
 }
 
+
+
+/* Browse preferences: remembered between visits when browser storage is available. */
+const AIRWAVE_BROWSE_PREFS_KEY = "airwave-browse-preferences";
+function saveBrowsePreferences() {
+  safeStorageSet(AIRWAVE_BROWSE_PREFS_KEY, JSON.stringify({
+    query: $("query").value,
+    country: $("country").value,
+    language: $("language").value,
+    genre: $("genre").value,
+    sort: $("sort").value,
+    view
+  }));
+}
+function restoreBrowsePreferences() {
+  let saved = {};
+  try { saved = JSON.parse(safeStorageGet(AIRWAVE_BROWSE_PREFS_KEY, "{}")) || {}; }
+  catch { saved = {}; }
+  $("query").value = typeof saved.query === "string" ? saved.query : "";
+  $("sort").value = ["name", "country", "random"].includes(saved.sort) ? saved.sort : "name";
+  for (const id of ["country", "language", "genre"]) {
+    const select = $(id);
+    const desired = typeof saved[id] === "string" ? saved[id] : "";
+    select.value = [...select.options].some(option => option.value === desired) ? desired : "";
+  }
+  view = ["all", "favs", "recent", "hidden"].includes(saved.view) ? saved.view : "all";
+  document.querySelectorAll("[data-view]").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+  $("countryPickLabel").textContent = $("country").selectedOptions[0]?.text || "All countries";
+  $("languagePickLabel").textContent = $("language").selectedOptions[0]?.text || "All languages";
+  $("genrePickLabel").textContent = $("genre").selectedOptions[0]?.text || "All genres";
+}
+
 function allKnownStations() {
   const unique = new Map();
   [...stations, ...importedFavouriteStations, ...hiddenStationRecords].forEach((station) => {
@@ -1053,6 +1113,7 @@ function applyFilters() {
 
   shown = 0;
   renderStations();
+  saveBrowsePreferences();
   if (current) updateExpandedPlayer();
 }
 
@@ -1093,8 +1154,31 @@ backToTop.setAttribute("aria-label", "Back to top");
 backToTop.title = "Back to top";
 backToTop.innerHTML = '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 6-6 6 6"/><path d="M12 8v12"/></svg>';
 document.body.append(backToTop);
-const updateBackToTop = () => backToTop.classList.toggle("visible", window.scrollY > 500);
+const airwaveOverlayIds = ["settingsbg", "aboutbg", "playerSheetBg", "pickerBackdrop"];
+function isAirwaveOverlayOpen() {
+  return airwaveOverlayIds.some((id) => {
+    const overlay = $(id);
+    if (!overlay) return false;
+    if (id === "playerSheetBg" || id === "pickerBackdrop") return overlay.classList.contains("open");
+    return getComputedStyle(overlay).display !== "none";
+  });
+}
+const updateBackToTop = () => {
+  const shouldShow = window.scrollY > 500 && !isAirwaveOverlayOpen();
+  backToTop.classList.toggle("visible", shouldShow);
+  backToTop.setAttribute("aria-hidden", String(!shouldShow));
+  backToTop.tabIndex = shouldShow ? 0 : -1;
+};
 window.addEventListener("scroll", updateBackToTop, {passive:true});
+window.addEventListener("resize", updateBackToTop, {passive:true});
+// Keep the floating control in sync whenever a modal or picker opens/closes.
+if ("MutationObserver" in window) {
+  const backToTopObserver = new MutationObserver(updateBackToTop);
+  airwaveOverlayIds.forEach((id) => {
+    const overlay = $(id);
+    if (overlay) backToTopObserver.observe(overlay, {attributes:true, attributeFilter:["class", "style"]});
+  });
+}
 backToTop.onclick = () => window.scrollTo({top:0,behavior:"smooth"});
 updateBackToTop();
 
@@ -1145,6 +1229,10 @@ function playStation(station) {
   $("sheetPrev").disabled = !getAdjacentRecentStation(-1);
   $("sheetNext").disabled = !getAdjacentRecentStation(1);
 
+  // Force a fresh stream request so Play always rejoins the live broadcast.
+  audio.pause();
+  audio.removeAttribute("src");
+  audio.load();
   audio.src = station.url_stream;
   audio.play()
     .then(() => {
@@ -1161,8 +1249,9 @@ function playStation(station) {
 }
 
 $("toggle").onclick = () => {
+  if (!current) return;
   if (audio.paused) {
-    audio.play().catch(() => {});
+    playStation(current);
   } else {
     audio.pause();
   }
@@ -1260,7 +1349,13 @@ $("miniPlayerOpen").addEventListener("click", (event) => {
   if (event.target.closest("button")) return;
   openPlayerSheet();
 });
-$("miniPlayerOpen").addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openPlayerSheet(); } });
+$("miniPlayerOpen").addEventListener("keydown", (event) => {
+  if (event.target.closest("button")) return;
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openPlayerSheet();
+  }
+});
 $("playerSheetClose").onclick = closePlayerSheet;
 $("openAbout").onclick = () => { $("settingsbg").style.display = "none"; $("aboutbg").style.display = "flex"; };
 $("aboutDone").onclick = () => { $("aboutbg").style.display = "none"; $("settingsbg").style.display = "flex"; };
@@ -1413,6 +1508,7 @@ $("reset").onclick = () => {
 
 $("query").oninput = () => {
   clearTimeout(window.airwaveSearchDelay);
+  saveBrowsePreferences();
   window.airwaveSearchDelay = setTimeout(applyFilters, 140);
 };
 
@@ -1511,7 +1607,21 @@ $("settingsbg").onclick = (event) => {
 };
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeSettings();
+  if (event.key !== "Escape") return;
+  if ($("pickerBackdrop").classList.contains("open")) {
+    $("pickerBackdrop").classList.remove("open");
+    return;
+  }
+  if ($("playerSheetBg").classList.contains("open")) {
+    closePlayerSheet();
+    return;
+  }
+  if ($("aboutbg").style.display === "flex") {
+    $("aboutbg").style.display = "none";
+    $("settingsbg").style.display = "flex";
+    return;
+  }
+  closeSettings();
 });
 
 $("theme").onchange = (event) => applyTheme(event.target.value);
@@ -1529,6 +1639,11 @@ function applyInterfaceLanguage(language, shouldRender = true) {
 $("uilang").onchange = (event) => {
   applyInterfaceLanguage(event.target.value);
 };
+
+window.addEventListener("pagehide", () => {
+  try { saveBrowsePreferences(); } catch (_) {}
+  try { savePreferences(); } catch (_) {}
+});
 
 /* 08 · IMPORT / EXPORT BACKUP
    Backups merge favourites and hidden stations without replacing the catalogue.
@@ -1652,7 +1767,6 @@ function importFavouritesFile(file) {
   reader.readAsText(file);
 }
 
-$("export").onclick = exportFavourites;
 $("export2").onclick = exportFavourites;
 
 function chooseFavouriteFile() {
@@ -1806,6 +1920,7 @@ async function loadCatalogue() {
       .map(([genre]) => genre);
     addSelectOptions("genre", popularGenres, (genre) => genre.replace(/\b\w/g, (letter) => letter.toUpperCase()));
 
+    restoreBrowsePreferences();
     $("dbinfo").textContent = `${stations.length.toLocaleString()} stations bundled`;
     applyFilters();
   } catch (error) {
