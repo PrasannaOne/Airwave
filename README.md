@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <a href="https://prasannaone.github.io/Airwave/">
-    ☝🏻 OPEN AIRWAVE · LISTEN LIVE
+     OPEN AIRWAVE · LISTEN LIVE
   </a>
 </h1><p align="center">
   <strong>Find your frequency. Your lil corner of radio.</strong>
