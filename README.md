@@ -76,6 +76,6 @@ Airwave is an independent project and is not affiliated with Radio Browser or th
 
 Made by **Prasanna** ❤️
 
-[Airwave](https://prasannaone.github.io/Airwave/) · [Telegram](https://t.me/PrasannaOne)
+[Airwave](https://prasannaone.github.io/Airwave/) · [GitHub](https://github.com/PrasannaOne) · [Telegram](https://t.me/PrasannaOne)
 
 </div>
