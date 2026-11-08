@@ -7,7 +7,6 @@
 ![Live](https://img.shields.io/badge/STATUS-LIVE-22C55E?style=flat-square)
 ![63K+ stations](https://img.shields.io/badge/STATIONS-63K%2B-6366F1?style=flat-square)
 ![Web app](https://img.shields.io/badge/PLATFORM-WEB-0EA5E9?style=flat-square)
-![No installation](https://img.shields.io/badge/INSTALL-NOT_REQUIRED-F59E0B?style=flat-square)
 
 *A simple, standalone internet radio player. Explore stations from around the world and listen live in one clean, browser-based player.*
 
@@ -100,6 +99,6 @@ To host your own copy, keep `index.html` and `stations.json.gz` together on a st
 
 [![TUNE IN · OPEN AIRWAVE](https://img.shields.io/badge/TUNE%20IN-OPEN%20AIRWAVE-8B5CF6?style=for-the-badge&labelColor=171326)](https://prasannaone.github.io/Airwave/)
 
- [Telegram](https://t.me/PrasannaOne)
+Contact me on [Telegram](https://t.me/PrasannaOne)
 
 **Made by Prasanna ❤️**
