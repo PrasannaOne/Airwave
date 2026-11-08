@@ -1,77 +1,183 @@
-<div align="center">
+::: {align="center"}
+# 📻 AIRWAVE
 
-<h1><a href="https://prasannaone.github.io/Airwave/">🎧 OPEN AIRWAVE · LISTEN LIVE ↗</a></h1>
+### **PRASANNA'S LITTLE CORNER OF THE INTERNET.**
 
-### Find your frequency.
+**THE WORLD ON AIR** · Find your frequency.
 
-Your lil corner of radio. Explore stations from around the world and listen live in one simple, browser-based player.
+```{=html}
+<p>
+```
+`<a href="https://prasannaone.github.io/Airwave/">`{=html}
+`<img src="https://img.shields.io/badge/🎧_OPEN_AIRWAVE-LISTEN_LIVE-8B5CF6?style=for-the-badge&labelColor=171326" alt="Open Airwave and listen live">`{=html}
+`</a>`{=html}
+```{=html}
+</p>
+```
+`<img src="https://img.shields.io/badge/STATUS-LIVE-22C55E?style=for-the-badge" alt="Live">`{=html}
+`<img src="https://img.shields.io/badge/STATIONS-63K%2B-6366F1?style=for-the-badge" alt="63K+ stations">`{=html}
+`<img src="https://img.shields.io/badge/PLATFORM-WEB-0EA5E9?style=for-the-badge" alt="Web app">`{=html}
+`<img src="https://img.shields.io/badge/INSTALL-NOT_REQUIRED-F59E0B?style=for-the-badge" alt="No installation required">`{=html}
 
-**Tap the big link above and you're on air.**
+`<br>`{=html}
 
-</div>
+*Your lil corner of radio. Explore stations from around the world and
+listen live in one simple, browser-based player.*
 
----
+[**Listen to Airwave**](https://prasannaone.github.io/Airwave/) · [View
+source](https://github.com/PrasannaOne/Airwave) ·
+[Developer](https://github.com/PrasannaOne)
+:::
 
-## What is Airwave?
+------------------------------------------------------------------------
 
-Airwave is a lightweight internet radio player that brings a large directory of stations into one listening space. Find something familiar, explore somewhere new, or let Airwave pick a station for you.
+## 🌍 What is Airwave?
 
-No account. No installation. Just open it in your browser.
+Airwave is a simple, standalone internet radio player that brings
+**63,168+ radio stations** into one listening space.
 
-## Features
+Find something familiar, explore somewhere new, or let Airwave pick a
+station for you. Search by station, country, language, or genre, save
+the stations you love, and keep listening while you browse.
 
-- **Explore 63,168 radio stations** from a bundled Radio Browser catalogue.
-- **Search and filter** by station name, country, language, or genre.
-- **Browse your way** with Explore, Favourites, and Recent.
-- **Surprise Me** with a playable station from your current filtered results.
-- **Keep listening while you browse** with a persistent mini-player and an expandable player.
-- **Control playback** with play/pause and previous/next station navigation.
-- **Set a sleep timer** from 5 to 60 minutes.
-- **Make it yours** with Midnight Purple, AMOLED Black, Ocean, Light, and Forest themes.
-- **Choose your interface language** with English and Tamil options.
-- **Hide and restore stations** from Settings whenever you want a cleaner list.
-- **Back up your favourites** with JSON import and export.
+**No account. No installation. No complicated setup. Just open it and
+tune in.**
 
-## Getting started
+------------------------------------------------------------------------
 
-1. [Open Airwave](https://prasannaone.github.io/Airwave/).
-2. Search for a station or explore with the country, language, and genre filters.
-3. Select a station to start listening.
-4. Save favourites, revisit recently played stations, or use **Surprise Me** to discover something random from your current results.
+## ✨ What you can do
 
-Airwave needs an internet connection to load the station catalogue and play live streams. Use an up-to-date browser that supports gzip decompression.
+  ------------------------------------------------------------------------
+                               Feature               What it does
+  ---------------------------- --------------------- ---------------------
+               🌍              **Explore**           Discover a worldwide
+                                                     catalogue of 63,168+
+                                                     radio stations.
 
-## Your data
+               🔎              **Search & filter**   Find stations by
+                                                     name, country,
+                                                     language, or genre.
 
-Favourites, recently played stations, hidden stations, and browsing preferences are saved in your browser when local storage is available. They are not automatically synced between devices.
+               ❤️              **Favourites**        Keep the stations you
+                                                     love close at hand.
 
-The JSON backup contains **favourites only**. Importing a backup merges favourites without duplicates. Imported stations that are not in the bundled catalogue are kept separately and remain playable. Hidden stations, listening history, and preferences are not included in the backup.
+               🕘              **Recently played**   Return to stations
+                                                     you've listened to
+                                                     before.
 
-## How it works
+               🎲              **Surprise Me**       Pick a playable
+                                                     station from your
+                                                     current filtered
+                                                     results.
+
+               🎧              **Persistent player** Keep listening with a
+                                                     mini-player while you
+                                                     explore.
+
+               🎛️              **Expanded player**   Open the full player
+                                                     for playback controls
+                                                     and station
+                                                     navigation.
+
+               🌙              **Sleep timer**       Set playback to stop
+                                                     after 5--60 minutes.
+
+               🙈              **Hide stations**     Hide stations from
+                                                     your list and restore
+                                                     them later in
+                                                     Settings.
+
+               🌐              **Language options**  Switch between
+                                                     English and Tamil.
+
+               🎨              **Five themes**       Give the player a
+                                                     look that feels right
+                                                     to you.
+
+               📦              **Favourites backup** Import and export
+                                                     favourites as a JSON
+                                                     file.
+  ------------------------------------------------------------------------
+
+## 🎨 Make it yours
+
+Choose one of five themes:
+
+  -----------------------------------------------------------------------------
+   🌌 Midnight     🖤 AMOLED       🌊 Ocean       ☀️ Light        🌲 Forest
+      Purple         Black                                    
+  -------------- -------------- -------------- -------------- -----------------
+     Default        Deep and      Cool blue      Bright and    Nature-inspired
+   Airwave look     minimal         tones          clean      
+
+  -----------------------------------------------------------------------------
+
+## 🎧 Getting started
+
+1.  **[Open Airwave](https://prasannaone.github.io/Airwave/)** in your
+    browser.
+2.  Search for a station or explore the catalogue.
+3.  Use the country, language, or genre filters to narrow things down.
+4.  Select a station and start listening.
+5.  Save favourites, revisit recently played stations, or try **Surprise
+    Me**.
+
+An internet connection is required to load the station catalogue and
+play live streams. Use an up-to-date browser that supports gzip
+decompression.
+
+## 💾 Your data, your browser
+
+Airwave stores favourites, recently played stations, hidden stations,
+and browsing preferences in your browser when local storage is
+available.
+
+-   Your data stays in that browser and is **not automatically synced
+    between devices**.
+-   JSON backup and import cover **favourites only**.
+-   Importing a backup merges favourites without duplicates.
+-   Imported stations that are not in the bundled catalogue are kept
+    separately and remain playable.
+-   Hidden stations, listening history, and browsing preferences are not
+    included in the favourites backup.
+
+## ⚙️ Under the hood
 
 Airwave is a static, client-side web app built with:
 
-- HTML
-- CSS
-- Vanilla JavaScript
-- Browser audio playback and local storage
+-   **HTML** for structure
+-   **CSS** for the interface and themes
+-   **Vanilla JavaScript** for app functionality
+-   **Browser audio and local storage** for listening and on-device
+    preferences
 
-The station catalogue is stored in the separate compressed file `stations.json.gz` and loaded by `index.html` when the app starts. Keep both files in the same directory when hosting your own copy.
+The station directory is based on [Radio
+Browser](https://www.radio-browser.info/), a community-driven radio
+station directory. Individual stations operate their own streams, so
+availability and playback quality may vary.
 
-The catalogue is based on [Radio Browser](https://www.radio-browser.info/). Radio streams are served by the stations' own stream servers, so availability and playback quality can vary by station.
+## 📱 Made to be easy to reach
 
-## Credits
+Airwave is designed for modern mobile and desktop browsers. Open the
+website directly; there's no account to create and no app installation
+required.
 
-The station directory is powered by [Radio Browser](https://www.radio-browser.info/).
+------------------------------------------------------------------------
 
-Airwave is an independent project and is not affiliated with Radio Browser or the stations listed in its catalogue.
+::: {align="center"}
+## Made by
 
----
+# **PRASANNA** ❤️
 
-<div align="center">
+*One simple idea. A whole world of radio.*
 
-Made by **Prasanna** ❤️
+[🎧 **OPEN AIRWAVE · LISTEN
+LIVE**](https://prasannaone.github.io/Airwave/)
 
+[GitHub](https://github.com/PrasannaOne) ·
 [Telegram](https://t.me/PrasannaOne)
 
-</div>
+`<br>`{=html}
+
+**AIRWAVE** · Find your frequency.
+:::
