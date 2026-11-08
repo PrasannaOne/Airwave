@@ -1,0 +1,4638 @@
+<!doctype html>
+<!--
+AIRWAVE | EASY-EDIT SOURCE GUIDE
+Made by Prasanna with ChatGPT.
+
+START HERE
+- This is the app interface and behaviour. The radio station catalogue is a
+  separate file named stations.json.gz. Keep it beside this HTML file.
+- Read the section labels before editing. Avoid changing element IDs unless
+  you also update the JavaScript that uses them.
+
+QUICK EDIT MAP
+1. BRAND + WORDING: search for "Airwave", "Find your frequency", or "Your lil corner of radio".
+2. COLOURS + THEMES: find "AIRWAVE DESIGN SETTINGS" in the CSS.
+3. LAYOUT + SPACING: search the CSS for the component name, such as .hero,
+   .filters, .station, .settings-group, or .playersheet.
+4. STATION CARD CONTENT: find "03 · THEME + STATION CARD UI" in JavaScript.
+5. SEARCH + FILTERS: find "04 · SEARCH, FILTERS, SORTING + RESULTS".
+6. MINI + EXPANDED PLAYER: find "05 · RADIO PLAYER" and "05B · EXPANDED PLAYER".
+7. SURPRISE ME: find "06 · SURPRISE ME".
+8. SETTINGS + LANGUAGE: find "07 · SETTINGS + INTERFACE LANGUAGE".
+9. BACKUP / RESTORE: find "08 · IMPORT / EXPORT BACKUP".
+10. STATION LOADING: find "09 · LOAD CATALOGUE + BUILD FILTER MENUS".
+
+FILE STRUCTURE
+- HTML: page sections, player, settings, About, and filter picker.
+- CSS: base styles first, component refinements next, theme design settings
+  near the end. Later component rules intentionally refine earlier defaults.
+- JavaScript: numbered sections for catalogue loading, saved state, cards,
+  filters, playback, player controls, settings, backup, and startup.
+- Data: stations.json.gz contains the compressed station catalogue. Replace
+  that file to update station data; keep the filename and relative path.
+
+FEATURES
+- Search, country/language/genre filters, and alphabet picker.
+- Explore, favourites, recent stations, and filtered Surprise Me.
+- Persistent mini-player, expanded player, and sleep timer.
+- Five colour themes and English/Tamil interface option.
+- Hide and restore stations from Settings.
+- JSON favourites backup. Imports merge without duplicates. Imported stations
+  outside the catalogue remain separately saved and playable.
+
+The station catalogue is never changed by importing a favourites backup.
+-->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+  <meta content="#0b0d14" name="theme-color"/>
+  <meta content="Prasanna" name="author"/>
+  <meta content="Find your frequency. Explore 63,168+ internet radio stations and listen live with Airwave." name="description"/>
+  <link href="https://prasannaone.github.io/Airwave/" rel="canonical"/>
+  <meta content="website" property="og:type"/>
+  <meta content="Airwave" property="og:site_name"/>
+  <meta content="Airwave · Find your frequency" property="og:title"/>
+  <meta content="Find your frequency. Explore 63,168+ radio stations and listen live." property="og:description"/>
+  <meta content="https://prasannaone.github.io/Airwave/" property="og:url"/>
+  <meta content="https://prasannaone.github.io/Airwave/airwave-preview.png" property="og:image"/>
+  <meta content="1200" property="og:image:width"/>
+  <meta content="630" property="og:image:height"/>
+  <meta content="Airwave. Find your frequency." property="og:image:alt"/>
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="https://prasannaone.github.io/Airwave/airwave-preview.png" name="twitter:image"/>
+  <meta content="Airwave · Find your frequency" name="twitter:title"/>
+  <meta content="Find your frequency. Explore 63,168+ radio stations and listen live." name="twitter:description"/>
+  <title>
+   Airwave · Find your frequency
+  </title>
+  <style>
+   :root {
+  color-scheme: dark;
+  --bg: #0b0d14;
+  --surface: #141a27;
+  --surface2: #1c2434;
+  --line: #29344a;
+  --text: #f5f6fc;
+  --muted: #9ba7bd;
+  --accent: #a99bff;
+  --mint: #70e4d0;
+  --pink: #ff8eae;
+  --shadow: 0 15px 45px #0004;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at 80% -12%,#403675 0,transparent 34%),var(--bg);
+  color: var(--text);
+  font: 14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+body.light {
+  color-scheme: light;
+  --bg: #f3f5fb;
+  --surface: #fff;
+  --surface2: #eef1f8;
+  --line: #dce1ed;
+  --text: #171b2b;
+  --muted: #68738a;
+  --accent: #6756d9;
+  --mint: #008f83;
+  --pink: #d84978;
+  --shadow: 0 15px 45px #27314b18;
+  background: radial-gradient(ellipse at 80% -12%,#ddd7ff 0,transparent 35%),var(--bg);
+}
+body.amoled {
+  --bg: #000;
+  --surface: #090909;
+  --surface2: #141414;
+  --line: #292929;
+  background: #000;
+}
+button,input,select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:focus-visible,input:focus-visible,select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.app {
+  max-width: 1000px;
+  margin: auto;
+  padding: 18px 16px 25px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 22px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  background: linear-gradient(140deg,var(--accent),var(--mint));
+  display: grid;
+  place-items: center;
+  color: #10131b;
+  font-size: 23px;
+  box-shadow: 0 8px 25px #8d7dff44;
+}
+.brand h1 {
+  font-size: 22px;
+  letter-spacing: -.8px;
+  margin: 0;
+  font-weight: 850;
+}
+.brand small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.head-actions {
+  display: flex;
+  gap: 7px;
+}
+.iconbtn {
+  height: 48px;
+  min-width: 48px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+.hero {
+  margin-bottom: 19px;
+}
+.tagline-tags {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.tagline-tags span {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  padding: 7px 11px;
+  border-radius: 30px;
+  font-size: 11px;
+}
+.eyebrow {
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.9px;
+  color: var(--mint);
+}
+.hero h2 {
+  font-size: clamp(29px,6vw,43px);
+  letter-spacing: -1.8px;
+  line-height: 1.04;
+  margin: 8px 0;
+}
+.hero p {
+  color: var(--muted);
+  margin: 0;
+  max-width: 600px;
+  font-size: 13px;
+}
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding: 9px 0 12px;
+  background: linear-gradient(var(--bg) 82%,transparent);
+  backdrop-filter: blur(12px);
+}
+.search {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+}
+.search span {
+  font-size: 20px;
+  color: var(--muted);
+}
+#query {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+}
+#query::placeholder {
+  color: var(--muted);
+}
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.filters select,.sort {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 13px 0 16px;
+  overflow: auto;
+}
+.nav button {
+  min-height: 48px;
+  padding: 11px 17px;
+  white-space: nowrap;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 9px 14px;
+  font-size: 12px;
+}
+.nav button.active {
+  background: var(--accent);
+  color: #111;
+  border-color: var(--accent);
+  font-weight: 800;
+}
+.rowhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 1px 11px;
+}
+.rowhead h3 {
+  font-size: 16px;
+  margin: 0;
+}
+.rowhead small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.sort {
+  width: auto;
+  max-width: 160px;
+}
+.stationlist {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 9px;
+}
+.station {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 11px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  transition: border .15s;
+}
+.station:active {
+  transform: scale(.99);
+}
+.station:hover {
+  border-color: #9385ed;
+}
+.logo {
+  width: 43px;
+  height: 43px;
+  flex: none;
+  border-radius: 13px;
+  background: var(--surface2);
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-size: 18px;
+}
+.info {
+  flex: 1;
+  min-width: 0;
+}
+.name {
+  font-weight: 750;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meta {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 3px;
+}
+.actions {
+  display: flex;
+  gap: 5px;
+}
+.smallbtn {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+}
+.smallbtn.play {
+  background: var(--accent);
+  color: #111;
+  border-color: transparent;
+}
+.smallbtn.liked {
+  color: var(--pink);
+}
+.smallbtn.hidebtn {
+  font-size: 15px;
+  color: var(--muted);
+}
+.smallbtn.hidebtn:hover {
+  color: var(--pink);
+}
+.empty {
+  grid-column: 1/-1;
+  padding: 36px 15px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+}
+.more {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--text);
+}
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
+  padding: 10px 15px calc(10px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb,var(--surface) 94%,transparent);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid var(--line);
+}
+.playerin {
+  max-width: 970px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.cover {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: linear-gradient(140deg,var(--accent),var(--mint));
+  display: grid;
+  place-items: center;
+  color: #111;
+  font-size: 19px;
+  flex: none;
+}
+.track {
+  flex: 1;
+  min-width: 0;
+}
+.track b {
+  display: block;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.player button {
+  height: 48px;
+  width: 48px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--accent);
+  color: #111;
+  font-size: 16px;
+}
+.player button.secondary {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+.modalbg {
+  position: fixed;
+  inset: 0;
+  background: #000a;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 17px;
+}
+.modal {
+  width: min(430px,100%);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 21px;
+  padding: 19px;
+  box-shadow: var(--shadow);
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+.modal p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.setting label {
+  font-size: 13px;
+}
+.setting select {
+  max-width: 180px;
+  padding: 9px;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+}
+.modalactions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.action {
+  border: 0;
+  border-radius: 11px;
+  background: var(--accent);
+  color: #111;
+  padding: 10px 14px;
+  font-weight: 750;
+}
+.action.secondary {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+.toast {
+  position: fixed;
+  z-index: 30;
+  bottom: 83px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12px;
+  display: none;
+  max-width: 90%;
+}
+@media (max-width:650px) {
+  .app {
+    padding: 14px 12px 22px;
+  }
+  .stationlist {
+    grid-template-columns: 1fr;
+  }
+  .hero h2 {
+    font-size: 34px;
+  }
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .filters select:last-child {
+    grid-column: 1/-1;
+  }
+  .header {
+    margin-bottom: 19px;
+  }
+}
+/* ==========================================================
+   AIRWAVE DESIGN SETTINGS
+   Edit this section to adjust the look without touching logic.
+   ========================================================== */
+:root {
+  --bg: #10111a;
+  --surface: #181a27;
+  --surface2: #202338;
+  --line: #30354a;
+  --text: #f3f3fa;
+  --muted: #a1a8bd;
+  --accent: #a99bff;
+  --mint: #78d9cf;
+  --pink: #e6a2c2;
+  --shadow: 0 12px 32px #0003;
+}
+body {
+  background: var(--bg);
+}
+body[data-theme="midnight"] {
+  --bg: #10111a;
+  --surface: #181a27;
+  --surface2: #202338;
+  --line: #30354a;
+  --text: #f3f3fa;
+  --muted: #a1a8bd;
+  --accent: #a99bff;
+  --mint: #78d9cf;
+  --pink: #e6a2c2;
+}
+body[data-theme="amoled"] {
+  --bg: #000000;
+  --surface: #090909;
+  --surface2: #141414;
+  --line: #292929;
+  --text: #f5f5f7;
+  --muted: #a0a0aa;
+  --accent: #ad9cff;
+  --mint: #72d9cd;
+  --pink: #ef9abd;
+}
+body[data-theme="ocean"] {
+  --bg: #0d1721;
+  --surface: #14212d;
+  --surface2: #1b2b39;
+  --line: #2b4050;
+  --text: #edf4f8;
+  --muted: #9fb2bf;
+  --accent: #8ebce8;
+  --mint: #75d5c7;
+  --pink: #e9a6c5;
+}
+body[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f5fa;
+  --surface: #ffffff;
+  --surface2: #edf0f7;
+  --line: #dfe3ed;
+  --text: #1c2130;
+  --muted: #69748a;
+  --accent: #786bc9;
+  --mint: #168f83;
+  --pink: #c65d87;
+  --shadow: 0 12px 32px #25304a12;
+}
+body[data-theme="forest"] {
+  --bg: #101913;
+  --surface: #17231b;
+  --surface2: #203026;
+  --line: #304538;
+  --text: #edf4ed;
+  --muted: #a4b7a7;
+  --accent: #adc58d;
+  --mint: #79c9a4;
+  --pink: #dfa0ad;
+}
+body[data-theme="light"] {
+  background: var(--bg);
+}
+body[data-theme="midnight"],
+body[data-theme="amoled"],
+body[data-theme="ocean"],
+body[data-theme="forest"] {
+  color-scheme: dark;
+  background: var(--bg);
+}
+.app {
+  max-width: 960px;
+  padding-top: 20px;
+}
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  margin: 0 -16px 26px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.brand h1 {
+  font-size: 25px;
+}
+.hero {
+  margin-bottom: 24px;
+}
+.hero .eyebrow {
+  margin-bottom: 8px;
+}
+.hero h2 {
+  margin: 0 0 7px;
+  font-size: clamp(29px, 5.7vw, 42px);
+}
+.hero p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.controls {
+  position: relative;
+  top: auto;
+  padding: 0;
+  margin-bottom: 17px;
+  background: transparent;
+  backdrop-filter: none;
+}
+.search {
+  height: 54px;
+  box-shadow: none;
+}
+.filters {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.filters select {
+  min-height: 49px;
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+.filters select:last-child {
+  grid-column: 1 / -1;
+}
+.filter-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 7px;
+}
+.reset {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 5px 2px;
+  font-size: 11px;
+}
+.reset:hover {
+  color: var(--accent);
+}
+.nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 17px 0 20px;
+  overflow: visible;
+}
+.nav button {
+  min-width: 0;
+  min-height: 47px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  text-align: center;
+}
+.rowhead {
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+.sort {
+  min-height: 46px;
+  padding: 10px 12px;
+}
+.stationlist {
+  gap: 11px;
+}
+.station {
+  padding: 12px;
+  gap: 12px;
+}
+.smallbtn {
+  width: 44px;
+  height: 44px;
+  font-size: 17px;
+}
+.iconbtn {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+}
+.player button {
+  width: 46px;
+  height: 46px;
+}
+.player {
+  background: var(--surface);
+}
+.modal {
+  width: min(460px, 100%);
+}
+.setting {
+  gap: 14px;
+}
+.setting select {
+  min-height: 42px;
+}
+.about-credit {
+  margin-top: 16px;
+  padding: 15px 13px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface2);
+  text-align: center;
+  font-size: 16px;
+  letter-spacing: -0.2px;
+}
+.about-credit strong:first-of-type {
+  color: var(--accent);
+}
+.about-credit span {
+  color: var(--pink);
+}
+.about-note,
+.import-note {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 12px 0 0;
+}
+@media (max-width: 650px) {
+  .app {
+    padding: 16px 14px 24px;
+  }
+  .header {
+    margin: 0 -14px 24px;
+    padding: 11px 14px;
+  }
+  .hero {
+    margin-bottom: 23px;
+  }
+  .filters {
+    gap: 11px;
+  }
+  .nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 17px;
+  }
+  .nav button {
+    min-height: 48px;
+  }
+  .stationlist {
+    grid-template-columns: 1fr;
+  }
+}
+/* SETTINGS PANEL: fixed, fully visible, and comfortably tappable */
+.modalbg {
+  position: fixed;
+  inset: 0;
+  padding: 12px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
+.modal {
+  width: min(430px, 100%);
+  max-height: calc(100dvh - 24px);
+  overflow: hidden;
+  padding: 17px 18px;
+  border-radius: 20px;
+}
+.modal h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+.modal > p {
+  margin: 0 0 9px;
+}
+.setting {
+  padding: 8px 0;
+  min-height: 43px;
+}
+.setting select {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+.setting .action,
+.setting button {
+  min-height: 40px;
+  padding: 8px 12px;
+}
+.about-credit {
+  margin-top: 10px;
+  padding: 11px 10px;
+}
+.about-note {
+  margin-top: 9px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.modalactions {
+  margin-top: 10px;
+}
+.modalactions .action {
+  min-height: 42px;
+  min-width: 82px;
+}
+.loading-pulse {
+  display: inline-block;
+  animation: airwavePulse 1.25s ease-in-out infinite;
+}
+@keyframes airwavePulse {
+  50% {
+    opacity: .45;
+  }
+}
+/* PLAYER + SETTINGS POLISH */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  margin: 0 -16px 18px;
+  padding: 12px 16px;
+  background: color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid color-mix(in srgb,var(--line) 75%,transparent);
+}
+@media (max-width:650px) {
+  .header {
+    margin: 0 -12px 16px;
+    padding: 10px 12px;
+  }
+}
+.nav {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.modalbg {
+  align-items: center;
+}
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: min(470px,100%);
+  max-height: min(88dvh,760px);
+  padding: 0;
+  overflow: hidden;
+}
+.settingshead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 19px 19px 13px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.settingshead h3 {
+  margin: 0 0 4px;
+  font-size: 19px;
+}
+.settingshead p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.settings-scroll {
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 19px;
+  flex: 1;
+  min-height: 0;
+}
+.settings-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 12px 19px calc(12px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+.settings-footer .action {
+  width: 100%;
+  min-height: 46px;
+}
+.hidden-setting-head {
+  display: block;
+}
+.hidden-setting-head>div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.hidden-setting-head small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.hidden-station-manager {
+  display: grid;
+  gap: 7px;
+  padding: 0 0 12px;
+}
+.hidden-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface2);
+  border-radius: 12px;
+  min-width: 0;
+}
+.hidden-row span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 650;
+}
+.hidden-row button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 9px;
+  padding: 7px 10px;
+  font-size: 11px;
+}
+.hidden-empty {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 9px 0 13px;
+}
+.player {
+  z-index: 15;
+  cursor: pointer;
+}
+.playerin {
+  cursor: pointer;
+}
+.playerin button {
+  position: relative;
+  z-index: 2;
+  flex: none;
+}
+.track {
+  cursor: pointer;
+}
+.sheetbg {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: #0009;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.sheetbg.open {
+  display: flex;
+}
+.playersheet {
+  width: min(620px,100%);
+  max-height: min(92dvh,850px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 26px 26px 0 0;
+  padding: 10px 22px calc(22px + env(safe-area-inset-bottom));
+  text-align: center;
+  box-shadow: 0 -20px 70px #0006;
+  animation: sheetUp .24s ease-out;
+}
+@keyframes sheetUp {
+  from {
+    transform: translateY(35px);
+    opacity: .7;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.sheetgrab {
+  width: 42px;
+  height: 4px;
+  border-radius: 9px;
+  background: var(--muted);
+  opacity: .45;
+  margin: 0 auto 13px;
+}
+.sheethead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.8px;
+}
+.sheetclose {
+  border: 1px solid var(--line);
+  background: var(--surface2);
+  color: var(--text);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 21px;
+}
+.sheetart {
+  width: clamp(150px,48vw,230px);
+  aspect-ratio: 1;
+  margin: 20px auto 17px;
+  border-radius: 25px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(140deg,var(--accent),var(--mint));
+  color: #111;
+  font-size: 68px;
+  box-shadow: 0 15px 50px #0003;
+}
+.sheetart img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.playersheet h2 {
+  font-size: clamp(20px,5vw,27px);
+  margin: 0 0 4px;
+  letter-spacing: -.5px;
+}
+.playersheet>p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 12px;
+}
+.livepill {
+  display: inline-flex;
+  margin: 13px auto 0;
+  padding: 6px 10px;
+  border-radius: 30px;
+  background: color-mix(in srgb,var(--mint) 14%,var(--surface2));
+  color: var(--mint);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1px;
+}
+.trackmeta {
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 10px 0 14px;
+}
+.sheetcontrols {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.sheetcontrols button {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  font-weight: 750;
+}
+.sheetcontrols .primary {
+  background: var(--accent);
+  color: #111;
+  border-color: transparent;
+  min-width: 130px;
+}
+.sheetcontrols .secondary {
+  background: var(--surface2);
+  color: var(--text);
+}
+.sleepbox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding: 14px 0;
+  margin-top: 13px;
+  border-top: 1px solid var(--line);
+}
+.sleepbox strong,.sleepbox small {
+  display: block;
+}
+.sleepbox strong {
+  font-size: 13px;
+}
+.sleepbox small {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.sleepbox select {
+  max-width: 155px;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 10px;
+  border-radius: 11px;
+}
+.stationdetails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  padding-top: 8px;
+}
+.stationdetails span {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 10px;
+}
+@media (min-width:700px) {
+  .sheetbg {
+    align-items: center;
+    padding: 20px;
+  }
+  .playersheet {
+    border-radius: 26px;
+    max-height: 90vh;
+  }
+  .sheetart {
+    width: 190px;
+  }
+}
+/* ==========================================================
+   AIRWAVE POLISH · SETTINGS + EXPANDED PLAYER
+   ========================================================== */
+.modalbg {
+  padding: 12px;
+  align-items: center;
+}
+.modal {
+  width: min(500px,100%);
+  height: min(86dvh,760px);
+  max-height: 86dvh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+}
+.settingshead {
+  flex: none;
+  padding: 18px 20px 14px;
+}
+.settingshead h3 {
+  font-size: 20px;
+}
+.settingshead p {
+  font-size: 13px;
+}
+.settings-scroll {
+  padding: 0 20px 12px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.setting {
+  padding: 14px 0;
+  gap: 14px;
+}
+.setting label {
+  font-size: 14px;
+  line-height: 1.4;
+}
+.setting select {
+  min-height: 42px;
+  font-size: 13px;
+}
+.settings-footer {
+  flex: none;
+  padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+}
+.settings-footer .action {
+  width: auto;
+  min-width: 112px;
+  min-height: 42px;
+  padding: 9px 20px;
+  font-size: 14px;
+}
+.hidden-settings {
+  border-top: 1px solid var(--line);
+  padding: 0;
+}
+.hidden-settings summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+.hidden-settings summary::-webkit-details-marker {
+  display: none;
+}
+.hidden-settings summary small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+.hidden-station-manager {
+  padding: 0 0 12px;
+  max-height: 220px;
+  overflow: auto;
+}
+.hidden-row {
+  padding: 8px 10px;
+}
+.hidden-empty {
+  padding: 7px 0 10px;
+}
+.playerin {
+  min-height: 62px;
+}
+.mini-eq {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.mini-eq i {
+  display: block;
+  width: 3px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--mint);
+}
+#miniPlayer.is-playing .mini-eq {
+  display: inline-flex;
+}
+#miniPlayer.is-playing .mini-eq i {
+  animation: eqBounce .72s ease-in-out infinite alternate;
+}
+#miniPlayer.is-playing .mini-eq i:nth-child(2) {
+  animation-delay: .18s;
+}
+#miniPlayer.is-playing .mini-eq i:nth-child(3) {
+  animation-delay: .36s;
+}
+@keyframes eqBounce {
+  from {
+    height: 3px;
+  }
+  to {
+    height: 12px;
+  }
+}
+.sheetbg {
+  touch-action: pan-y;
+}
+.playersheet {
+  padding: 12px 22px calc(22px + env(safe-area-inset-bottom));
+  gap: 0;
+}
+.sheethead {
+  min-height: 38px;
+}
+.sheetclose {
+  width: 42px;
+  height: 42px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.sheetart {
+  width: clamp(145px,42vw,205px);
+  margin: 13px auto 14px;
+  border-radius: 24px;
+}
+.playersheet h2 {
+  font-size: clamp(21px,5vw,27px);
+}
+.livepill {
+  margin-top: 10px;
+}
+.sheetcontrols {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 10px;
+  margin: 22px 0 14px;
+}
+.sheetcontrols button {
+  min-width: 0;
+  min-height: 58px;
+  padding: 0 8px;
+  border-radius: 16px;
+  font-size: 21px;
+  touch-action: manipulation;
+}
+.sheetcontrols .primary {
+  min-width: 0;
+  font-size: 22px;
+}
+.sleepbox {
+  display: block;
+  padding: 14px 0;
+  margin-top: 5px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+.sleep-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.sleep-title strong {
+  font-size: 14px;
+}
+.sleep-title small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.sleep-control {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.sleep-control label {
+  font-size: 13px;
+  font-weight: 750;
+  min-width: 48px;
+}
+.sleep-control input {
+  width: 100%;
+  accent-color: var(--accent);
+  min-height: 30px;
+}
+.sleep-action {
+  min-width: 76px;
+  min-height: 42px;
+  padding: 8px 13px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface2);
+  color: var(--text);
+  font-weight: 750;
+}
+.stationdetails {
+  padding-top: 10px;
+}
+@media (max-height:720px) {
+  .playersheet {
+    max-height: 96dvh;
+    overflow-y: auto;
+  }
+  .sheetart {
+    width: 112px;
+    margin: 8px auto;
+  }
+  .sheetcontrols {
+    margin: 13px 0 8px;
+  }
+  .sleepbox {
+    padding: 9px 0;
+  }
+}
+/* PLAYER + SETTINGS REFINEMENT */
+.modal {
+  width: min(500px,100%);
+  height: min(86dvh,760px);
+  max-height: 86dvh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+}
+.settingshead {
+  flex: none;
+}
+.settings-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.settings-footer {
+  position: static;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+}
+.settings-footer .action {
+  width: auto;
+  min-width: 88px;
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 13px;
+}
+.creator-credit {
+  align-self: stretch;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 2px 0 0;
+}
+.creator-credit strong {
+  color: var(--text);
+}
+.creator-credit span {
+  color: var(--pink);
+}
+.about-modal {
+  width: min(460px,100%);
+}
+.about-brand {
+  text-align: center;
+  font-size: 35px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  margin: 22px 0 8px;
+}
+.about-brand span {
+  color: var(--accent);
+}
+.about-copy {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 320px;
+  margin: 0 auto 24px;
+}
+.about-links {
+  display: grid;
+  gap: 10px;
+}
+.about-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+}
+.about-links a strong {
+  color: var(--accent);
+}
+.about-credit {
+  margin-top: 20px;
+}
+.sheetcontrols {
+  display: grid !important;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 9px !important;
+  width: 100%;
+  margin: 20px 0 13px !important;
+}
+.sheetcontrols button {
+  width: 100%;
+  min-width: 0 !important;
+  max-width: none;
+  min-height: 64px !important;
+  height: 64px;
+  padding: 0 !important;
+  border-radius: 17px !important;
+  font-size: 23px !important;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  overflow: hidden;
+}
+#sheetFav {
+  font-size: 25px !important;
+}
+#sheetHide {
+  font-size: 25px !important;
+}
+#sheetToggle {
+  font-size: 25px !important;
+}
+.sheetcontrols button:disabled {
+  opacity: .4;
+}
+@media (max-width:390px) {
+  .sheetcontrols {
+    gap: 6px !important;
+  }
+  .sheetcontrols button {
+    min-height: 56px !important;
+    height: 56px;
+    font-size: 20px !important;
+  }
+}
+/* COMPACT FILTERS, PICKERS, SHARE + ABOUT */
+.compact-filters {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px !important;
+}
+.filterpick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.filterpick span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.filterpick b {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--muted);
+}
+.genre-pick {
+  grid-column: auto;
+}
+.iconbtn,.smallbtn,.player button,.sheetcontrols button,.action,.nav button,.filterpick {
+  font-weight: 900;
+}
+.iconbtn {
+  font-size: 21px;
+  text-shadow: 0 0 .5px currentColor;
+}
+.settings-footer {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.creator-credit {
+  align-self: auto !important;
+  text-align: left !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: var(--text) !important;
+}
+.creator-credit strong {
+  font-size: 16px;
+}
+.settings-footer .action {
+  order: 2;
+}
+.creator-credit {
+  order: 1;
+}
+.about-section {
+  margin: 18px 0;
+}
+.about-section h4 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.about-section ul {
+  padding-left: 19px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+.about-links {
+  display: grid;
+  gap: 8px;
+}
+.easter-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin: 18px 0 6px;
+}
+.easter-reveal {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface2);
+  text-align: center;
+  font-weight: 750;
+  color: var(--accent);
+  margin-top: 8px;
+}
+.picker-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 18vh 14px 14px;
+  background: #0008;
+}
+.picker-backdrop.open {
+  display: flex;
+}
+.picker-pop {
+  width: min(390px,100%);
+  max-height: min(440px,65dvh);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.picker-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.picker-top strong {
+  font-size: 15px;
+}
+.picker-top button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 21px;
+}
+#pickerSearch {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface2);
+  color: var(--text);
+}
+.alphabet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.alphabet button {
+  min-width: 25px;
+  height: 27px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+}
+.alphabet button.active {
+  background: var(--accent);
+  color: #111;
+}
+.picker-options {
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  min-height: 50px;
+}
+.picker-options button {
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface2);
+  color: var(--text);
+  text-align: left;
+  font-size: 12px;
+}
+.picker-options button.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb,var(--accent) 16%,var(--surface2));
+}
+@media (max-width:390px) {
+  .compact-filters {
+    gap: 5px !important;
+  }
+  .filterpick {
+    padding: 0 7px;
+    font-size: 11px;
+    min-height: 44px;
+  }
+  .filterpick b {
+    font-size: 14px;
+  }
+}
+/* CLEAN PLAYER CONTROLS */
+.sheetcontrols {
+  display: block !important;
+  width: 100%;
+  margin: 20px 0 16px !important;
+}
+.player-control-layout {
+  display: grid;
+  gap: 11px;
+  width: 100%;
+}
+.transport-controls {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap: 12px;
+}
+.transport-controls button {
+  width: 100%;
+  height: 66px;
+  min-height: 66px;
+  border-radius: 17px;
+  font-size: 28px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+.transport-controls #sheetToggle {
+  font-size: 25px;
+}
+.station-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.station-actions button {
+  width: 100%;
+  min-height: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 21px;
+  font-weight: 800;
+}
+.station-actions button small {
+  font-size: 13px;
+  font-weight: 750;
+}
+.station-actions button span {
+  font-size: 23px;
+  line-height: 1;
+}
+.transport-controls button:disabled,.station-actions button:disabled {
+  opacity: .42;
+}
+.about-credit {
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface2);
+  font-size: 17px;
+  font-weight: 800;
+  text-align: center;
+}
+.about-credit strong {
+  color: var(--accent);
+}
+.about-credit span {
+  color: var(--pink);
+}
+.development-credit {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 8px 0 2px;
+}
+@media (max-width:390px) {
+  .transport-controls {
+    gap: 9px;
+  }
+  .transport-controls button {
+    height: 60px;
+    min-height: 60px;
+  }
+  .station-actions {
+    gap: 9px;
+  }
+}
+/* AIRWAVE · CLEAN SYSTEM UI */
+:root {
+  --control-radius: 14px;
+}
+.header .iconbtn {
+  display: grid;
+  place-items: center;
+}
+.header .iconbtn svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.15;
+}
+.head-actions {
+  gap: 9px;
+}
+.iconbtn {
+  border-radius: 15px;
+}
+.filterpick {
+  font-size: 12px;
+  font-weight: 650;
+}
+.filterpick>svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.modal {
+  width: min(500px,100%);
+  height: min(88dvh,780px);
+  max-height: 88dvh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 23px;
+}
+.settingshead {
+  padding: 21px 22px 17px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.settingshead h3 {
+  font-size: 20px;
+  letter-spacing: -.35px;
+}
+.settingshead p {
+  font-size: 13px;
+  margin-top: 5px;
+}
+.settings-scroll {
+  padding: 4px 22px 22px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1;
+  min-height: 0;
+}
+.settings-group {
+  padding: 17px 0 5px;
+  border-bottom: 1px solid var(--line);
+}
+.settings-group:last-child {
+  border-bottom: 0;
+}
+.settings-group>h4 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+}
+.setting {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid color-mix(in srgb,var(--line) 65%,transparent);
+}
+.setting:last-child {
+  border-bottom: 0;
+}
+.setting-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.setting-copy label {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.setting-copy small {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.setting select {
+  width: 142px;
+  max-width: 42vw;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 12px;
+}
+.setting .action {
+  min-width: 86px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 11px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.setting-value {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+}
+.hidden-settings {
+  border-bottom: 1px solid color-mix(in srgb,var(--line) 65%,transparent);
+}
+.hidden-settings summary {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 0;
+  list-style: none;
+  cursor: pointer;
+}
+.hidden-settings summary::-webkit-details-marker {
+  display: none;
+}
+.hidden-settings summary::marker {
+  content: "";
+}
+.hidden-station-manager {
+  padding: 0 0 12px;
+  max-height: 200px;
+  overflow: auto;
+}
+.hidden-row {
+  background: var(--surface2);
+  border-color: var(--line);
+}
+.danger-action {
+  color: #ef9292 !important;
+}
+.contact-group {
+  padding-bottom: 18px;
+}
+.contact-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+  margin: 7px 0 12px;
+}
+.contact-name span {
+  color: var(--pink);
+}
+.contact-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.contact-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface2);
+  color: var(--text);
+  text-decoration: none;
+}
+.contact-links a>span:last-child {
+  display: grid;
+  gap: 2px;
+}
+.contact-links b {
+  font-size: 12px;
+}
+.contact-links small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.contact-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 17px;
+}
+.settings-footer {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 22px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+.settings-footer .action {
+  width: auto;
+  min-width: 92px;
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 13px;
+}
+.about-modal {
+  width: min(500px,100%);
+}
+.about-brand {
+  font-size: 32px;
+  letter-spacing: -1.3px;
+}
+.about-section {
+  padding: 15px 0;
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+.about-section h4 {
+  font-size: 13px;
+  letter-spacing: .1px;
+  margin: 0 0 7px;
+}
+.about-section p,.about-section li {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.about-section p {
+  margin: 0 0 8px;
+}
+.about-section ul {
+  padding-left: 18px;
+  margin: 0;
+}
+.about-section a {
+  color: var(--accent);
+}
+.development-credit {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+@media (max-width:420px) {
+  .settings-scroll {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .settingshead {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .settings-footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .setting {
+    gap: 9px;
+  }
+  .setting-copy label {
+    font-size: 13px;
+  }
+  .setting-copy small {
+    font-size: 10px;
+  }
+  .setting select {
+    width: 128px;
+  }
+  .contact-links {
+    gap: 7px;
+  }
+}
+/* AIRWAVE FINAL · PLAYER / FILTER / SETTINGS FOOTER */
+.player-actions {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 20px 0 17px;
+}
+.player-action {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  height: 76px;
+  min-height: 76px;
+  padding: 8px 5px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.1;
+  box-shadow: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.player-action .action-icon {
+  display: grid;
+  place-items: center;
+  height: 27px;
+  font-size: 25px;
+  line-height: 1;
+}
+.player-action .action-label {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.player-action.player-play {
+  background: var(--accent);
+  border-color: transparent;
+  color: #171322;
+}
+.player-action:disabled {
+  opacity: .42;
+}
+.player-action:active {
+  transform: scale(.97);
+}
+.transport-controls,.station-actions {
+  display: none !important;
+}
+.settings-footer {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom)) !important;
+}
+.footer-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+.footer-identity>strong {
+  font-size: 14px;
+  font-weight: 850;
+  white-space: nowrap;
+  color: var(--text);
+}
+.footer-identity>strong span {
+  color: var(--pink);
+}
+.footer-contacts {
+  display: flex;
+  gap: 7px;
+}
+.footer-contacts a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.contact-symbol {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 800;
+}
+.settings-footer #close {
+  width: auto !important;
+  min-width: 82px !important;
+  min-height: 42px !important;
+  padding: 8px 17px !important;
+  flex: none;
+}
+.compact-filters {
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 34px !important;
+  gap: 7px !important;
+  align-items: center;
+}
+.compact-filters .filterpick {
+  min-width: 0;
+  width: 100%;
+  min-height: 43px;
+  padding: 0 8px;
+  font-size: 11px;
+}
+.compact-filters .filterpick span {
+  min-width: 0;
+}
+.compact-filters .compact-reset {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+}
+.filter-tools {
+  display: none !important;
+}
+@media (max-width:390px) {
+  .player-actions {
+    gap: 7px;
+    margin: 17px 0 14px;
+  }
+  .player-action {
+    height: 68px;
+    min-height: 68px;
+    border-radius: 14px;
+  }
+  .player-action .action-label {
+    font-size: 11px;
+  }
+  .footer-identity>strong {
+    font-size: 12px;
+  }
+  .footer-contacts a {
+    gap: 4px;
+    padding: 5px 7px;
+    font-size: 10px;
+  }
+  .settings-footer {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .compact-filters {
+    gap: 5px !important;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 31px !important;
+  }
+  .compact-filters .filterpick {
+    padding: 0 6px;
+    font-size: 10px;
+  }
+  .compact-filters .compact-reset {
+    width: 31px;
+    height: 31px;
+  }
+}
+/* Smooth player sheet motion */
+.sheetbg {
+  opacity: 0;
+  transition: opacity .2s ease;
+  backdrop-filter: blur(5px);
+}
+.sheetbg.open {
+  opacity: 1;
+}
+.playersheet {
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.2,.78,.25,1);
+  will-change: transform;
+}
+.sheetbg.open .playersheet {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion:reduce) {
+  .sheetbg,.playersheet {
+    transition: none !important;
+  }
+}
+/* SHARE PREVIEW + PLAYER TRANSPORT + BACK TO TOP */
+.transport-row {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 20px 0 12px;
+}
+.transport-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  height: 70px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.transport-button small {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--muted);
+}
+.transport-button.transport-main {
+  background: var(--accent);
+  border-color: transparent;
+  color: #171322;
+}
+.transport-button.transport-main small {
+  color: #171322;
+}
+.transport-button:disabled {
+  opacity: .38;
+}
+.transport-button:active {
+  transform: scale(.97);
+}
+.player-secondary-actions {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+  margin: 0 0 17px;
+}
+.player-secondary-actions .player-action {
+  height: 60px;
+  min-height: 60px;
+  flex-direction: row;
+  gap: 9px;
+}
+.player-secondary-actions .player-action .action-icon {
+  height: auto;
+  font-size: 22px;
+}
+.player-secondary-actions .player-action .action-label {
+  font-size: 12px;
+}
+.back-to-top {
+  position: fixed;
+  right: 18px;
+  bottom: calc(104px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface2);
+  color: var(--text);
+  box-shadow: 0 8px 24px #0004;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .18s ease,transform .18s ease,visibility .18s ease;
+  cursor: pointer;
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.back-to-top:active {
+  transform: scale(.94);
+}
+@media (max-width:390px) {
+  .transport-row {
+    gap: 7px;
+  }
+  .transport-button {
+    height: 65px;
+    border-radius: 13px;
+  }
+  .player-secondary-actions {
+    gap: 7px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .back-to-top {
+    transition: none;
+  }
+}
+/* AIRWAVE REFINEMENTS · hero, mini-player and share preview */
+.hero {
+  margin-bottom: 27px;
+}
+.hero h2 {
+  margin-bottom: 0;
+}
+.controls {
+  padding-top: 15px;
+}
+.playerin {
+  gap: 11px;
+}
+.cover {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.track {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.track b, .track small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#miniPlayerOpen {
+  min-width: 0;
+}
+#miniCover, #trackname {
+  cursor: pointer;
+}
+/* SMALL POLISH + CROSS-DEVICE TOUCH BEHAVIOUR */
+html, body, button, a, input, select, textarea, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+button:focus:not(:focus-visible), a:focus:not(:focus-visible), [role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.back-to-top {
+  z-index: 18;
+  pointer-events: none;
+}
+.back-to-top.visible {
+  pointer-events: auto;
+}
+.back-to-top:active {
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface2));
+  transform: scale(.96);
+}
+.about-modal .settings-footer {
+  justify-content: flex-end !important;
+}
+/* ==========================================================
+   AIRWAVE · RESPONSIVE FINISH + QUIET PLAYER STARTUP
+   Final overrides: spacing, touch targets, and small screens.
+   ========================================================== */
+body {
+  padding-bottom: 24px;
+}
+body.player-ready {
+  padding-bottom: calc(104px + env(safe-area-inset-bottom));
+}
+#miniPlayer {
+  display: none;
+}
+body.player-ready #miniPlayer {
+  display: block;
+}
+.app {
+  width: min(100%, 1120px);
+  padding-left: clamp(12px, 2.4vw, 26px);
+  padding-right: clamp(12px, 2.4vw, 26px);
+}
+.header {
+  margin-left: calc(-1 * clamp(12px, 2.4vw, 26px));
+  margin-right: calc(-1 * clamp(12px, 2.4vw, 26px));
+  padding-left: clamp(12px, 2.4vw, 26px);
+  padding-right: clamp(12px, 2.4vw, 26px);
+}
+.hero {
+  margin-top: clamp(18px, 3vw, 30px);
+  margin-bottom: clamp(20px, 3vw, 30px);
+}
+.controls {
+  margin-bottom: 14px;
+}
+.search {
+  min-width: 0;
+}
+#query {
+  min-width: 0;
+  font-size: 15px;
+}
+.nav button, .filterpick, .sort, .smallbtn, .iconbtn {
+  touch-action: manipulation;
+}
+.stationlist {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.station {
+  min-width: 0;
+}
+.name, .meta {
+  overflow-wrap: anywhere;
+}
+.rowhead {
+  align-items: end;
+}
+#count {
+  display: block;
+  line-height: 1.5;
+}
+.empty {
+  line-height: 1.65;
+}
+.player {
+  padding-left: max(14px, env(safe-area-inset-left));
+  padding-right: max(14px, env(safe-area-inset-right));
+}
+.playerin {
+  min-width: 0;
+}
+.playerin .track {
+  min-width: 0;
+}
+.playerin button {
+  flex: 0 0 46px;
+}
+.toast {
+  bottom: calc(84px + env(safe-area-inset-bottom));
+}
+.back-to-top {
+  bottom: calc(22px + env(safe-area-inset-bottom));
+}
+body.player-ready .back-to-top {
+  bottom: calc(108px + env(safe-area-inset-bottom));
+}
+@media (min-width: 900px) {
+  .app {
+    padding-top: 24px;
+  }
+  .stationlist {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+  }
+  .station {
+    padding: 13px;
+  }
+  .hero h2 {
+    max-width: 760px;
+  }
+}
+@media (max-width: 700px) {
+  .stationlist {
+    grid-template-columns: 1fr;
+  }
+  .rowhead {
+    align-items: center;
+  }
+}
+@media (max-width: 430px) {
+  .app {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .header {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .brand h1 {
+    font-size: 23px;
+  }
+  .head-actions {
+    gap: 7px;
+  }
+  .iconbtn {
+    width: 43px;
+    min-width: 43px;
+    height: 43px;
+    padding: 0;
+  }
+  .hero {
+    margin-top: 17px;
+  }
+  .hero h2 {
+    font-size: clamp(29px, 8vw, 35px);
+    letter-spacing: -1.25px;
+  }
+  .search {
+    height: 51px;
+    padding: 0 12px;
+  }
+  .compact-filters {
+    gap: 5px !important;
+  }
+  .compact-filters .filterpick {
+    min-height: 42px;
+  }
+  .nav {
+    gap: 7px;
+    margin: 14px 0 17px;
+  }
+  .nav button {
+    min-height: 44px;
+    padding: 9px 7px;
+    font-size: 12px;
+  }
+  .rowhead h3 {
+    font-size: 15px;
+  }
+  .sort {
+    max-width: 125px;
+    min-height: 42px;
+    font-size: 11px;
+  }
+  .station {
+    padding: 10px;
+    gap: 9px;
+  }
+  .logo {
+    width: 41px;
+    height: 41px;
+  }
+  .smallbtn {
+    width: 41px;
+    height: 41px;
+  }
+  .playerin {
+    gap: 8px;
+  }
+  .cover {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+  .playerin button {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+  }
+}
+@media (max-width: 350px) {
+  .compact-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 29px !important;
+  }
+  .compact-filters .filterpick {
+    padding: 0 5px;
+    font-size: 9px;
+  }
+  .compact-filters .compact-reset {
+    width: 29px;
+    height: 29px;
+  }
+  .nav button {
+    font-size: 11px;
+  }
+  .station {
+    gap: 7px;
+  }
+  .logo {
+    width: 36px;
+    height: 36px;
+  }
+  .smallbtn {
+    width: 37px;
+    height: 37px;
+  }
+  .actions {
+    gap: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+   /* Hidden stations: keep the description under its label on every screen. */
+.hidden-settings summary .setting-copy {
+  min-width: 0;
+}
+.hidden-settings summary .setting-copy small {
+  margin-left: 0;
+}
+.hidden-settings summary::marker {
+  content: "";
+}
+.hidden-settings summary::-webkit-details-marker {
+  display: none;
+}
+  </style>
+ </head>
+ <body>
+  <div class="app">
+   <!-- 01 · APP HEADER -->
+   <header class="header">
+    <div class="brand">
+     <div class="mark">
+      〰
+     </div>
+     <div>
+      <h1>
+       Airwave
+       <span style="color:var(--accent)">
+        .
+       </span>
+      </h1>
+     </div>
+    </div>
+    <div class="head-actions">
+     <button class="iconbtn" id="settings" title="Settings">
+      <svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="22">
+       <circle cx="12" cy="12" r="3">
+       </circle>
+       <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6.3v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2H15v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1z">
+       </path>
+      </svg>
+     </button>
+     <button aria-label="Share Airwave" class="iconbtn" id="share" title="Share Airwave">
+      <svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="22">
+       <circle cx="18" cy="5" r="3">
+       </circle>
+       <circle cx="6" cy="12" r="3">
+       </circle>
+       <circle cx="18" cy="19" r="3">
+       </circle>
+       <path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4">
+       </path>
+      </svg>
+     </button>
+    </div>
+   </header>
+   <!-- 02 · HERO -->
+   <section class="hero">
+    <h2>
+     Find your frequency.
+    </h2>
+   </section>
+   <!-- 03 · SEARCH + FILTERS -->
+   <section class="controls">
+    <label class="search">
+     <span>
+      ⌕
+     </span>
+     <input autocomplete="off" id="query" placeholder="Search stations, genres, countries…" type="search"/>
+    </label>
+    <div class="filters compact-filters">
+     <button class="filterpick" id="countryPick" type="button">
+      🌍
+      <span id="countryPickLabel">
+       All countries
+      </span>
+      <b>
+       ⌄
+      </b>
+     </button>
+     <button class="filterpick" id="languagePick" type="button">
+      文
+      <span id="languagePickLabel">
+       All languages
+      </span>
+      <b>
+       ⌄
+      </b>
+     </button>
+     <button class="filterpick genre-pick" id="genrePick" type="button">
+      ♫
+      <span id="genrePickLabel">
+       All genres
+      </span>
+      <b>
+       ⌄
+      </b>
+     </button>
+     <button aria-label="Reset filters" class="reset compact-reset" id="reset" title="Reset filters" type="button">
+      <svg aria-hidden="true" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="17">
+       <path d="M3 12a9 9 0 1 0 2.6-6.4L3 8">
+       </path>
+       <path d="M3 3v5h5">
+       </path>
+      </svg>
+     </button>
+     <select aria-label="Country" hidden="" id="country">
+      <option value="">
+       All countries
+      </option>
+     </select>
+     <select aria-label="Language" hidden="" id="language">
+      <option value="">
+       All languages
+      </option>
+     </select>
+     <select aria-label="Genre" hidden="" id="genre">
+      <option value="">
+       All genres
+      </option>
+     </select>
+    </div>
+   </section>
+   <!-- 04 · VIEWS + STATION RESULTS -->
+   <nav aria-label="Station views" class="nav">
+    <button class="active" data-view="all">
+     Explore
+    </button>
+    <button data-view="favs">
+     ♡ Favourites
+    </button>
+    <button data-view="recent">
+     ◷ Recent
+    </button>
+    <button id="surprise">
+     ✧ Surprise me
+    </button>
+   </nav>
+   <div class="rowhead">
+    <div>
+     <h3 id="heading">
+      Explore stations
+     </h3>
+     <small id="count">
+      Loading station catalogue…
+     </small>
+    </div>
+    <select class="sort" id="sort">
+     <option value="name">
+      Name: A–Z
+     </option>
+     <option value="country">
+      Country
+     </option>
+     <option value="random">
+      Shuffle results
+     </option>
+    </select>
+   </div>
+   <div class="stationlist" id="list">
+    <div class="empty" id="loadingState">
+     <span class="loading-pulse">
+      Preparing your radio catalogue…
+     </span>
+    </div>
+   </div>
+   <button class="more" hidden="" id="more">
+    Load more
+   </button>
+  </div>
+  <!-- 05 · MINI PLAYER -->
+  <div class="player" id="miniPlayer">
+   <div aria-label="Expand player" class="playerin" id="miniPlayerOpen" role="button" tabindex="0">
+    <div class="cover" id="miniCover">
+     ♫
+    </div>
+    <div class="track">
+     <b id="trackname">
+      Nothing playing yet
+     </b>
+     <small>
+      <span aria-hidden="true" class="mini-eq" id="miniEq">
+       <i>
+       </i>
+       <i>
+       </i>
+       <i>
+       </i>
+      </span>
+      <span id="trackstate">
+       Choose a station to start listening
+      </span>
+     </small>
+    </div>
+    <button aria-label="Favourite station" class="secondary" disabled="" id="playerfav">
+     ♡
+    </button>
+    <button aria-label="Play or pause" disabled="" id="toggle">
+     ▶
+    </button>
+   </div>
+   <audio id="audio" preload="none">
+   </audio>
+  </div>
+  <!-- 06 · EXPANDED PLAYER + SLEEP TIMER -->
+  <div class="sheetbg" id="playerSheetBg">
+   <section aria-label="Now playing" aria-modal="true" class="playersheet" id="playerSheet" role="dialog">
+    <div class="sheethead">
+     <span>
+      NOW PLAYING
+     </span>
+     <button aria-label="Close player" class="sheetclose" id="playerSheetClose">
+      ⌄
+     </button>
+    </div>
+    <div class="sheetart" id="sheetArt">
+     ♫
+    </div>
+    <h2 id="sheetStation">
+     Nothing playing yet
+    </h2>
+    <p id="sheetSubtitle">
+     Choose a station to start listening
+    </p>
+    <div class="livepill" id="livePill">
+     ● LIVE RADIO
+    </div>
+    <div class="transport-row">
+     <button aria-label="Previous station" class="transport-button" disabled="" id="sheetPrev" title="Previous station">
+      <span aria-hidden="true">
+       ⏮
+      </span>
+      <small>
+       Previous
+      </small>
+     </button>
+     <button aria-label="Play or pause" class="transport-button transport-main" disabled="" id="sheetToggle">
+      <span aria-hidden="true" class="action-icon">
+       ▶
+      </span>
+      <small class="action-label">
+       Play
+      </small>
+     </button>
+     <button aria-label="Next station" class="transport-button" disabled="" id="sheetNext" title="Next station">
+      <span aria-hidden="true">
+       ⏭
+      </span>
+      <small>
+       Next
+      </small>
+     </button>
+    </div>
+    <div class="player-actions player-secondary-actions">
+     <button aria-label="Block station" class="player-action" disabled="" id="sheetHide" title="Block station">
+      <span aria-hidden="true" class="action-icon">
+       ⊘
+      </span>
+      <span class="action-label">
+       Block
+      </span>
+     </button>
+     <button aria-label="Add to favourites" class="player-action" disabled="" id="sheetFav" title="Favourite">
+      <span aria-hidden="true" class="action-icon">
+       ♡
+      </span>
+      <span class="action-label">
+       Favourite
+      </span>
+     </button>
+    </div>
+    <div class="sleepbox">
+     <div class="sleep-title">
+      <strong>
+       Sleep timer
+      </strong>
+      <small id="sleepStatus">
+       Off · Keep listening
+      </small>
+     </div>
+     <div class="sleep-control">
+      <label for="sleepTimer">
+       <span id="sleepMinutes">
+        15 min
+       </span>
+      </label>
+      <input id="sleepTimer" max="60" min="5" step="5" type="range" value="15"/>
+      <button class="sleep-action" id="sleepAction">
+       Start
+      </button>
+     </div>
+    </div>
+    <div class="stationdetails" id="sheetDetails">
+    </div>
+   </section>
+  </div>
+  <!-- 07 · SETTINGS DIALOG -->
+  <div class="modalbg" id="settingsbg">
+   <div class="modal settings-modal">
+    <div class="settingshead">
+     <div>
+      <h3>
+       Settings
+      </h3>
+      <p>
+       Make Airwave yours.
+      </p>
+     </div>
+    </div>
+    <div class="settings-scroll">
+     <section class="settings-group">
+      <h4>
+       Personalise
+      </h4>
+      <div class="setting">
+       <div class="setting-copy">
+        <label for="theme">
+         Appearance
+        </label>
+        <small>
+         Choose your colour theme
+        </small>
+       </div>
+       <select id="theme">
+        <option value="midnight">
+         Midnight purple
+        </option>
+        <option value="amoled">
+         AMOLED black
+        </option>
+        <option value="ocean">
+         Ocean
+        </option>
+        <option value="light">
+         Light
+        </option>
+        <option value="forest">
+         Forest
+        </option>
+       </select>
+      </div>
+      <div class="setting">
+       <div class="setting-copy">
+        <label for="uilang">
+         Language
+        </label>
+        <small>
+         App display language
+        </small>
+       </div>
+       <select id="uilang">
+        <option value="en">
+         English
+        </option>
+        <option value="ta">
+         தமிழ்
+        </option>
+       </select>
+      </div>
+     </section>
+     <section class="settings-group">
+      <h4>
+       Backup &amp; data
+      </h4>
+      <div class="setting">
+       <div class="setting-copy">
+        <label>
+         Import backup
+        </label>
+        <small>
+         Merge saved favourites from an Airwave JSON backup
+        </small>
+       </div>
+       <button class="action secondary" id="import2">
+        Import JSON
+       </button>
+      </div>
+      <div class="setting">
+       <div class="setting-copy">
+        <label>
+         Export backup
+        </label>
+        <small>
+         Save your favourites as a JSON backup
+        </small>
+       </div>
+       <button class="action secondary" id="export2">
+        Export
+       </button>
+      </div>
+      <div class="setting">
+       <div class="setting-copy">
+        <label>
+         Clear saved data
+        </label>
+        <small>
+         Remove favourites, hidden stations and history
+        </small>
+       </div>
+       <button class="action secondary danger-action" id="clear">
+        Clear
+       </button>
+      </div>
+      <details class="hidden-settings">
+       <summary>
+        <span class="setting-copy">
+         <label>
+          Hidden stations
+         </label>
+         <small>
+          Restore stations you've hidden
+         </small>
+        </span>
+        <span class="setting-value" id="hiddenCount">
+         0 hidden
+        </span>
+       </summary>
+       <div class="hidden-station-manager" id="hiddenStationManager">
+       </div>
+      </details>
+     </section>
+     <section class="settings-group">
+      <h4>
+       About
+      </h4>
+      <div class="setting">
+       <div class="setting-copy">
+        <label>
+         About Airwave
+        </label>
+        <small>
+         Project details and a quick usage guide
+        </small>
+       </div>
+       <button class="action secondary" id="openAbout">
+        View guide
+       </button>
+      </div>
+     </section>
+    </div>
+    <div class="settings-footer">
+     <div class="footer-identity">
+      <strong>
+       Made by Prasanna
+       <span>
+        ❤️
+       </span>
+      </strong>
+      <div class="footer-contacts">
+       <a aria-label="Telegram @PrasannaOne" href="https://t.me/PrasannaOne" rel="noopener" target="_blank">
+        <span class="contact-symbol">
+         ↗
+        </span>
+        <span>
+         Telegram
+        </span>
+       </a>
+       <a aria-label="GitHub PrasannaOne" href="https://github.com/PrasannaOne" rel="noopener" target="_blank">
+        <span class="contact-symbol">
+         ⌘
+        </span>
+        <span>
+         GitHub
+        </span>
+       </a>
+      </div>
+     </div>
+     <button class="action" id="close">
+      Done
+     </button>
+    </div>
+   </div>
+  </div>
+  <!-- 08 · ABOUT DIALOG -->
+  <div class="modalbg" id="aboutbg">
+   <div class="modal about-modal">
+    <div class="settingshead">
+     <div>
+      <h3>
+       About Airwave
+      </h3>
+      <p>
+       The world on air, gathered in one place.
+      </p>
+     </div>
+    </div>
+    <div class="settings-scroll">
+     <div class="about-brand">
+      Airwave
+      <span>
+       .
+      </span>
+     </div>
+     <p class="about-copy">
+      Find your frequency. Your lil corner of radio. Airwave brings internet radio stations from around the world into one simple listening space.
+     </p>
+     <section class="about-section">
+      <h4>
+       Getting started
+      </h4>
+      <p>
+       Browse the station catalogue or use search to find a station by name. Choose a station to start listening. The mini-player stays available while you explore.
+      </p>
+     </section>
+     <section class="about-section">
+      <h4>
+       Find your stations
+      </h4>
+      <ul>
+       <li>
+        <b>
+         Search:
+        </b>
+        Look up stations by name or available catalogue details.
+       </li>
+       <li>
+        <b>
+         Filters:
+        </b>
+        Narrow results by country, language or genre. The letter picker helps you jump through long lists.
+       </li>
+       <li>
+        <b>
+         Surprise Me:
+        </b>
+        Pick a random playable station from your current results.
+       </li>
+      </ul>
+     </section>
+     <section class="about-section">
+      <h4>
+       Make it yours
+      </h4>
+      <ul>
+       <li>
+        <b>
+         Favourites:
+        </b>
+        Tap the heart to save a station.
+       </li>
+       <li>
+        <b>
+         Hide:
+        </b>
+        Remove stations you don't want to see. Restore them later in Settings → Hidden stations.
+       </li>
+       <li>
+        <b>
+         Recent:
+        </b>
+        Return to stations you've listened to.
+       </li>
+       <li>
+        <b>
+         Player:
+        </b>
+        Tap or swipe up to expand. Swipe down or use the close control to collapse.
+       </li>
+       <li>
+        <b>
+         Sleep timer:
+        </b>
+        Choose 5–60 minutes to stop playback automatically.
+       </li>
+      </ul>
+     </section>
+     <section class="about-section">
+      <h4>
+       Back up your stations
+      </h4>
+      <p>
+       Export a JSON backup of your favourites. Import it later to merge those stations into another Airwave browser session. Stations that are not in the catalogue stay saved separately and remain playable. The station catalogue is not changed.
+      </p>
+     </section>
+     <section class="about-section">
+      <h4>
+       Credits
+      </h4>
+      <p>
+       The station catalogue is powered by
+       <a href="https://www.radio-browser.info/" rel="noopener" target="_blank">
+        Radio Browser
+       </a>
+       . Airwave is an independent project and is not affiliated with the listed stations.
+      </p>
+      <p class="development-credit">
+       Development assistance: ChatGPT
+      </p>
+     </section>
+    </div>
+    <div class="settings-footer">
+     <button class="action" id="aboutDone">
+      Done
+     </button>
+    </div>
+   </div>
+  </div>
+  <!-- 09 · FILTER PICKER -->
+  <div class="picker-backdrop" id="pickerBackdrop">
+   <div class="picker-pop" id="pickerPop">
+    <div class="picker-top">
+     <strong id="pickerTitle">
+      Choose
+     </strong>
+     <button aria-label="Close" id="pickerClose">
+      ×
+     </button>
+    </div>
+    <input id="pickerSearch" placeholder="Search…" type="search"/>
+    <div class="alphabet" id="pickerAlphabet">
+    </div>
+    <div class="picker-options" id="pickerOptions">
+    </div>
+   </div>
+  </div>
+  <input accept=".json,application/json" hidden="" id="file" type="file"/>
+  <div class="toast" id="toast">
+  </div>
+  <!-- Station catalogue is loaded from ./stations.json.gz -->
+  <!-- 10 · APPLICATION LOGIC -->
+  <script>
+   /* ==========================================================
+   AIRWAVE JAVASCRIPT
+   Keep the sections below in place when editing features.
+   ========================================================== */
+
+/* 01 · EXTERNAL STATION CATALOGUE
+   Keep stations.json.gz beside this HTML file in the same repository.
+   The catalogue is fetched and unpacked when Airwave starts.
+*/
+
+/* 02 · APP STATE + SMALL HELPERS */
+const $ = (id) => document.getElementById(id);
+const audio = $("audio");
+const PAGE_SIZE = 60;
+const stationCollator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+const countryNameCache = new Map();
+const languageNameCache = new Map();
+
+function safeStorageGet(key, fallback = null) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Browsing and streaming remain available when storage is blocked.
+  }
+}
+
+let stations = [];
+let sortedCatalogue = [];
+let importedFavouriteStations = loadSavedArray("airwave-imported-favs");
+let hiddenStationIds = new Set(loadSavedArray("airwave-hidden-ids"));
+let hiddenStationRecords = loadSavedArray("airwave-hidden-records");
+let filtered = [];
+let shown = 0;
+let view = "all";
+let current = null;
+let favs = new Set(loadSavedArray("airwave-favs"));
+let recent = loadSavedArray("airwave-recent");
+let ui = safeStorageGet("airwave-language", "en") || "en";
+let toastTimer = null;
+
+function loadSavedArray(key) {
+  try {
+    const value = JSON.parse(safeStorageGet(key, "[]") || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch {
+    return [];
+  }
+}
+
+function stationKey(station) {
+  return station.stationuuid || station.url_stream || "";
+}
+
+function isHttpUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function splitCatalogueList(value) {
+  const values = Array.isArray(value) ? value : String(value || "").split(/[,;|]/);
+  return [...new Set(values.map((item) => String(item || "").trim()).filter(Boolean))];
+}
+
+function stationTags(value) {
+  return splitCatalogueList(value);
+}
+
+function stationLanguages(station) {
+  return splitCatalogueList(station?.iso_639).map((code) => code.toLowerCase());
+}
+
+function countryName(code) {
+  if (!code) return "Unknown";
+  if (countryNameCache.has(code)) return countryNameCache.get(code);
+  let name = code;
+  try {
+    name = new Intl.DisplayNames(["en"], { type: "region" }).of(code) || code;
+  } catch {}
+  countryNameCache.set(code, name);
+  return name;
+}
+
+function languageName(code) {
+  if (!code) return "";
+  if (languageNameCache.has(code)) return languageNameCache.get(code);
+  let name = code;
+  try {
+    name = new Intl.DisplayNames(["en"], { type: "language" }).of(code) || code;
+  } catch {}
+  languageNameCache.set(code, name);
+  return name;
+}
+
+function toast(message) {
+  $("toast").textContent = message;
+  $("toast").style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    $("toast").style.display = "none";
+  }, 2400);
+}
+
+function savePreferences() {
+  safeStorageSet("airwave-favs", JSON.stringify([...favs]));
+  safeStorageSet("airwave-recent", JSON.stringify(recent));
+  safeStorageSet(
+    "airwave-imported-favs",
+    JSON.stringify(importedFavouriteStations)
+  );
+  safeStorageSet("airwave-hidden-ids", JSON.stringify([...hiddenStationIds]));
+  safeStorageSet("airwave-hidden-records", JSON.stringify(hiddenStationRecords));
+}
+
+
+
+/* Browse preferences: remembered between visits when browser storage is available. */
+const AIRWAVE_BROWSE_PREFS_KEY = "airwave-browse-preferences";
+let browsePreferencesReady = false;
+function saveBrowsePreferences() {
+  // Do not overwrite saved filters until the catalogue has populated all options.
+  if (!browsePreferencesReady) return;
+  safeStorageSet(AIRWAVE_BROWSE_PREFS_KEY, JSON.stringify({
+    query: $("query").value,
+    country: $("country").value,
+    language: $("language").value,
+    genre: $("genre").value,
+    sort: $("sort").value,
+    view,
+    theme: safeStorageGet("airwave-theme", "midnight"),
+    languageUI: ui
+  }));
+}
+function restoreBrowsePreferences() {
+  let saved = {};
+  try { saved = JSON.parse(safeStorageGet(AIRWAVE_BROWSE_PREFS_KEY, "{}")) || {}; }
+  catch { saved = {}; }
+  $("query").value = typeof saved.query === "string" ? saved.query : "";
+  $("sort").value = ["name", "country", "random"].includes(saved.sort) ? saved.sort : "name";
+  for (const id of ["country", "language", "genre"]) {
+    const select = $(id);
+    const desired = typeof saved[id] === "string" ? saved[id] : "";
+    select.value = [...select.options].some(option => option.value === desired) ? desired : "";
+  }
+  view = ["all", "favs", "recent", "hidden"].includes(saved.view) ? saved.view : "all";
+  document.querySelectorAll("[data-view]").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+  $("countryPickLabel").textContent = $("country").selectedOptions[0]?.text || "All countries";
+  $("languagePickLabel").textContent = $("language").selectedOptions[0]?.text || "All languages";
+  $("genrePickLabel").textContent = $("genre").selectedOptions[0]?.text || "All genres";
+}
+
+function allKnownStations() {
+  const unique = new Map();
+  [...stations, ...importedFavouriteStations, ...hiddenStationRecords].forEach((station) => {
+    const id = stationKey(station);
+    // The current catalogue is authoritative when an imported record now matches it.
+    if (id && !unique.has(id)) unique.set(id, station);
+  });
+  return [...unique.values()];
+}
+
+/* 03 · THEME + STATION CARD UI */
+function applyTheme(theme) {
+  const allowedThemes = ["midnight", "amoled", "ocean", "light", "forest"];
+  const selectedTheme = allowedThemes.includes(theme) ? theme : "midnight";
+
+  document.body.dataset.theme = selectedTheme;
+  safeStorageSet("airwave-theme", selectedTheme);
+  $("theme").value = selectedTheme;
+}
+
+function makeStationCard(station) {
+  const card = document.createElement("article");
+  card.className = "station";
+
+  let logo;
+  if (station.url_favicon) {
+    logo = document.createElement("img");
+    logo.className = "logo";
+    logo.alt = "";
+    logo.loading = "lazy";
+    logo.src = station.url_favicon;
+    logo.onerror = () => {
+      const fallback = document.createElement("div");
+      fallback.className = "logo";
+      fallback.textContent = "♫";
+      logo.replaceWith(fallback);
+    };
+  } else {
+    logo = document.createElement("div");
+    logo.className = "logo";
+    logo.textContent = "♫";
+  }
+
+  const info = document.createElement("div");
+  info.className = "info";
+
+  const name = document.createElement("div");
+  name.className = "name";
+  name.textContent = station.name || "Unnamed station";
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  const languages = stationLanguages(station);
+  meta.textContent = [
+    countryName(station.iso_3166_1),
+    stationTags(station.tags).slice(0, 2).join(" · "),
+    languages.map(languageName).join(", ")
+  ].filter(Boolean).join(" • ");
+
+  info.append(name, meta);
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  const favouriteButton = document.createElement("button");
+  favouriteButton.type = "button";
+  favouriteButton.className = "smallbtn";
+  favouriteButton.textContent = favs.has(stationKey(station)) ? "♥" : "♡";
+  favouriteButton.title = "Toggle favourite";
+  if (favs.has(stationKey(station))) {
+    favouriteButton.classList.add("liked");
+  }
+  favouriteButton.onclick = () => {
+    const id = stationKey(station);
+    if (favs.has(id)) {
+      favs.delete(id);
+    } else {
+      favs.add(id);
+    }
+    savePreferences();
+    applyFilters();
+  };
+
+  const hideButton = document.createElement("button");
+  hideButton.type = "button";
+  hideButton.className = "smallbtn hidebtn";
+  const isHidden = hiddenStationIds.has(stationKey(station));
+  hideButton.textContent = isHidden ? "↶" : "⊘";
+  hideButton.title = isHidden ? "Restore station" : "Hide station";
+  hideButton.setAttribute("aria-label", hideButton.title);
+  hideButton.onclick = () => {
+    const id = stationKey(station);
+    if (hiddenStationIds.has(id)) {
+      hiddenStationIds.delete(id);
+      toast("Station restored.");
+    } else {
+      hiddenStationIds.add(id);
+      if (!stations.some((item) => stationKey(item) === id) &&
+          !hiddenStationRecords.some((item) => stationKey(item) === id)) {
+        hiddenStationRecords.push(station);
+      }
+      toast("Station hidden. You can restore it in Hidden stations.");
+    }
+    savePreferences();
+    applyFilters();
+  };
+
+  const playButton = document.createElement("button");
+  playButton.type = "button";
+  playButton.className = "smallbtn play";
+  playButton.textContent = "▶";
+  playButton.title = "Play station";
+  playButton.onclick = () => playStation(station);
+
+  actions.append(hideButton, favouriteButton, playButton);
+  card.append(logo, info, actions);
+  return card;
+}
+
+/* 04 · SEARCH, FILTERS, SORTING + RESULTS */
+function applyFilters() {
+  const query = $("query").value.trim().toLowerCase();
+  const selectedCountry = $("country").value;
+  const selectedLanguage = $("language").value;
+  const selectedGenre = $("genre").value;
+  const source = view === "favs" || view === "recent" || view === "hidden" ? allKnownStations() : stations;
+
+  const noFilters = !query && !selectedCountry && !selectedLanguage && !selectedGenre;
+  const unfilteredExplore = source === stations && noFilters && hiddenStationIds.size === 0;
+  filtered = unfilteredExplore && $("sort").value === "name" && sortedCatalogue.length
+    ? sortedCatalogue.slice()
+    : unfilteredExplore
+      ? stations.slice()
+      : source.filter((station) => {
+    const id = stationKey(station);
+    if (view === "hidden" && !hiddenStationIds.has(id)) return false;
+    if (view !== "hidden" && hiddenStationIds.has(id)) return false;
+    if (view === "favs" && !favs.has(id)) return false;
+    if (view === "recent" && !recent.includes(id)) return false;
+    if (selectedCountry && station.iso_3166_1 !== selectedCountry) return false;
+
+    if (selectedLanguage && !stationLanguages(station).includes(selectedLanguage)) return false;
+    if (selectedGenre && !stationTags(station.tags).some((tag) => tag.toLowerCase() === selectedGenre)) return false;
+
+    if (!query) return true;
+    const languages = stationLanguages(station);
+    const searchableText = [
+      station.name || "",
+      station.tags || "",
+      station.iso_3166_1 || "",
+      countryName(station.iso_3166_1),
+      ...languages,
+      ...languages.map(languageName)
+    ].join(" ").toLowerCase();
+    return searchableText.includes(query);
+  });
+
+  if (view === "recent") {
+    filtered.sort((a, b) => recent.indexOf(stationKey(a)) - recent.indexOf(stationKey(b)));
+  } else if ($("sort").value === "country") {
+    filtered.sort((a, b) =>
+      stationCollator.compare(countryName(a.iso_3166_1), countryName(b.iso_3166_1)) ||
+      stationCollator.compare(a.name || "", b.name || "")
+    );
+  } else if ($("sort").value === "random") {
+    // Fisher-Yates shuffle avoids the slow and unstable random sort comparator.
+    for (let i = filtered.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+    }
+  } else if (!unfilteredExplore || $("sort").value !== "name" || !sortedCatalogue.length) {
+    // The default Name: A–Z order is precomputed once for the full Explore catalogue.
+    filtered.sort((a, b) => stationCollator.compare(a.name || "", b.name || ""));
+  }
+
+  shown = 0;
+  renderStations();
+  saveBrowsePreferences();
+  if (current) {
+    $("playerfav").textContent = favs.has(stationKey(current)) ? "♥" : "♡";
+    updateExpandedPlayer();
+  }
+}
+
+function renderStations() {
+  const list = $("list");
+  list.replaceChildren();
+
+  const page = filtered.slice(0, shown + PAGE_SIZE);
+  shown = page.length;
+  page.forEach((station) => list.append(makeStationCard(station)));
+
+  const visibleCount = filtered.length.toLocaleString();
+  const totalCount = stations.length.toLocaleString();
+  $("count").textContent = ui === "ta"
+    ? `${visibleCount} வானொலிகள் · மொத்தம் ${totalCount}`
+    : `${visibleCount} ${filtered.length === 1 ? "station" : "stations"} · ${totalCount} in catalogue`;
+  $("heading").textContent = {
+    all: ui === "ta" ? "வானொலிகளை ஆராயுங்கள்" : "Explore stations",
+    favs: ui === "ta" ? "விருப்பமானவை" : "Your favourites",
+    recent: ui === "ta" ? "சமீபத்தில் கேட்டவை" : "Recently played",
+    hidden: ui === "ta" ? "மறைக்கப்பட்டவை" : "Hidden stations"
+  }[view];
+
+  $("more").hidden = shown >= filtered.length;
+
+  if (page.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    const emptyMessages = {
+      all: ui === "ta"
+        ? "வானொலிகள் இல்லை. தேடல் அல்லது வடிப்பான்களை மாற்றிப் பாருங்கள்."
+        : "No stations match. Try another search or adjust your filters.",
+      favs: ui === "ta"
+        ? "இன்னும் விருப்பமான வானொலிகள் இல்லை. நிலையங்களில் உள்ள இதயத்தைத் தட்டிச் சேமிக்கவும்."
+        : "No favourites yet. Tap the heart on any station to save it here.",
+      recent: ui === "ta" ? "இன்னும் எந்த வானொலியும் கேட்கப்படவில்லை." : "Your listening history will appear here after you play a station.",
+      hidden: ui === "ta" ? "மறைக்கப்பட்ட வானொலிகள் எதுவும் இல்லை." : "You haven't hidden any stations."
+    };
+    empty.textContent = emptyMessages[view] || emptyMessages.all;
+    list.append(empty);
+  }
+}
+
+
+const backToTop = document.createElement("button");
+backToTop.id = "backToTop";
+backToTop.className = "back-to-top";
+backToTop.type = "button";
+backToTop.setAttribute("aria-label", "Back to top");
+backToTop.title = "Back to top";
+backToTop.innerHTML = `
+  <svg viewBox="0 0 24 24" width="21" height="21" fill="none"
+       stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true">
+    <path d="m6 14 6-6 6 6" />
+    <path d="M12 8v12" />
+  </svg>
+`;
+document.body.append(backToTop);
+const airwaveOverlayIds = ["settingsbg", "aboutbg", "playerSheetBg", "pickerBackdrop"];
+function isAirwaveOverlayOpen() {
+  return airwaveOverlayIds.some((id) => {
+    const overlay = $(id);
+    if (!overlay) return false;
+    if (id === "playerSheetBg" || id === "pickerBackdrop") return overlay.classList.contains("open");
+    return getComputedStyle(overlay).display !== "none";
+  });
+}
+const updateBackToTop = () => {
+  const shouldShow = window.scrollY > 500 && !isAirwaveOverlayOpen();
+  backToTop.classList.toggle("visible", shouldShow);
+  backToTop.setAttribute("aria-hidden", String(!shouldShow));
+  backToTop.tabIndex = shouldShow ? 0 : -1;
+};
+window.addEventListener("scroll", updateBackToTop, {passive:true});
+window.addEventListener("resize", updateBackToTop, {passive:true});
+// Keep the floating control in sync whenever a modal or picker opens/closes.
+if ("MutationObserver" in window) {
+  const backToTopObserver = new MutationObserver(updateBackToTop);
+  airwaveOverlayIds.forEach((id) => {
+    const overlay = $(id);
+    if (overlay) backToTopObserver.observe(overlay, {attributes:true, attributeFilter:["class", "style"]});
+  });
+}
+backToTop.onclick = () => window.scrollTo({top:0,behavior:"smooth"});
+updateBackToTop();
+
+const AIRWAVE_PUBLIC_URL = "https://prasannaone.github.io/Airwave/";
+const AIRWAVE_SHARE_TEXT = "🎧 Airwave · Find your frequency. Explore 63,168+ radio stations and listen live. https://prasannaone.github.io/Airwave/";
+$("share").onclick = async () => {
+  const shareData = {
+    title: "🎧 Airwave · Find your frequency",
+    text: AIRWAVE_SHARE_TEXT
+  };
+  try {
+    if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+      await navigator.share(shareData);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(AIRWAVE_SHARE_TEXT);
+      toast("Airwave share message copied. Send it anywhere! 💜");
+    } else {
+      const field = document.createElement("textarea");
+      field.value = AIRWAVE_SHARE_TEXT;
+      document.body.append(field); field.select();
+      document.execCommand("copy"); field.remove();
+      toast("Airwave share message copied.");
+    }
+  } catch (error) {
+    if (error && error.name !== "AbortError") toast("Couldn't open sharing. Try copying the site link.");
+  }
+};
+
+/* 05 · RADIO PLAYER + LISTENING HISTORY */
+function playStation(station) {
+  if (!isHttpUrl(station.url_stream)) {
+    toast("This station has no valid radio stream URL.");
+    return;
+  }
+
+  current = station;
+  document.body.classList.add("player-ready");
+  $("trackname").textContent = station.name || "Unknown station";
+  $("trackstate").textContent = "Connecting…";
+  $("toggle").disabled = false;
+  $("playerfav").disabled = false;
+  $("playerfav").textContent = favs.has(stationKey(station)) ? "♥" : "♡";
+  updatePlayerArtwork(station);
+  updateExpandedPlayer();
+  $("sheetToggle").querySelector(".action-icon").textContent = "Ⅱ";
+  $("sheetToggle").querySelector(".action-label").textContent = "Pause";
+  $("sheetToggle").disabled = false;
+  $("sheetFav").disabled = false;
+  $("sheetPrev").disabled = !getAdjacentRecentStation(-1);
+  $("sheetNext").disabled = !getAdjacentRecentStation(1);
+
+  // Force a fresh stream request so Play always rejoins the live broadcast.
+  audio.pause();
+  audio.removeAttribute("src");
+  audio.load();
+  audio.src = station.url_stream;
+  audio.play()
+    .then(() => {
+      $("trackstate").textContent = "Now playing · Live radio";
+    })
+    .catch(() => {
+      $("toggle").textContent = "▶";
+      $("sheetToggle").querySelector(".action-icon").textContent = "▶";
+      $("sheetToggle").querySelector(".action-label").textContent = "Play";
+      $("trackstate").textContent = "Stream unavailable or unsupported";
+      $("miniPlayer").classList.remove("is-playing");
+      updateExpandedPlayer();
+    });
+
+  const id = stationKey(station);
+  recent = [id, ...recent.filter((item) => item !== id)].slice(0, 100);
+  savePreferences();
+  if (view === "recent") applyFilters();
+  else updateExpandedPlayer();
+}
+
+$("toggle").onclick = () => {
+  if (!current) return;
+  if (audio.paused) {
+    playStation(current);
+  } else {
+    audio.pause();
+  }
+};
+
+audio.onplay = () => {
+  $("toggle").textContent = "Ⅱ";
+  $("sheetToggle").querySelector(".action-icon").textContent = "Ⅱ";
+  $("sheetToggle").querySelector(".action-label").textContent = "Pause";
+  $("trackstate").textContent = "Now playing · Live radio";
+  $("miniPlayer").classList.add("is-playing");
+  updateExpandedPlayer();
+};
+
+audio.onpause = () => {
+  $("toggle").textContent = "▶";
+  $("sheetToggle").querySelector(".action-icon").textContent = "▶";
+  $("sheetToggle").querySelector(".action-label").textContent = "Play";
+  $("trackstate").textContent = current ? "Paused" : "Choose a station to start listening";
+  $("miniPlayer").classList.remove("is-playing");
+  updateExpandedPlayer();
+};
+
+audio.onerror = () => {
+  $("toggle").textContent = "▶";
+  $("sheetToggle").querySelector(".action-icon").textContent = "▶";
+  $("sheetToggle").querySelector(".action-label").textContent = "Play";
+  $("trackstate").textContent = "Stream unavailable or unsupported";
+  $("miniPlayer").classList.remove("is-playing");
+  updateExpandedPlayer();
+};
+
+$("playerfav").onclick = () => {
+  if (!current) return;
+
+  const id = stationKey(current);
+  if (favs.has(id)) {
+    favs.delete(id);
+  } else {
+    favs.add(id);
+  }
+
+  savePreferences();
+  $("playerfav").textContent = favs.has(id) ? "♥" : "♡";
+  updateExpandedPlayer();
+  applyFilters();
+};
+
+/* 05B · EXPANDED PLAYER + SLEEP TIMER */
+let sleepTimerId = null;
+let sleepTimerEndsAt = 0;
+let sleepTickId = null;
+
+function updatePlayerArtwork(station) {
+  const mini = $("miniCover");
+  const art = $("sheetArt");
+  mini.replaceChildren(); art.replaceChildren();
+  if (station?.url_favicon) {
+    const miniImg = document.createElement("img");
+    miniImg.src = station.url_favicon;
+    miniImg.alt = "";
+    miniImg.onerror = () => { mini.textContent = "♫"; };
+    const artImg = document.createElement("img");
+    artImg.src = station.url_favicon;
+    artImg.alt = "Station artwork";
+    artImg.onerror = () => { art.textContent = "♫"; };
+    mini.append(miniImg); art.append(artImg);
+  } else { mini.textContent = "♫"; art.textContent = "♫"; }
+}
+
+function updateExpandedPlayer() {
+  if (!current) return;
+  $("sheetStation").textContent = current.name || "Unknown station";
+  const subtitle = [countryName(current.iso_3166_1), stationLanguages(current).map(languageName).join(", ")].filter(Boolean).join(" · ");
+  $("sheetSubtitle").textContent = subtitle || "Internet radio";
+  $("sheetDetails").replaceChildren();
+  [current.codec, current.bitrate ? `${current.bitrate} kbps` : "", ...stationTags(current.tags).slice(0,3)].filter(Boolean).forEach((value) => {
+    const chip = document.createElement("span"); chip.textContent = value; $("sheetDetails").append(chip);
+  });
+  const isFav = favs.has(stationKey(current));
+  const isHidden = hiddenStationIds.has(stationKey(current));
+  $("sheetFav").querySelector(".action-icon").textContent = isFav ? "♥" : "♡";
+  $("sheetFav").querySelector(".action-label").textContent = isFav ? "Favourited" : "Favourite";
+  $("sheetFav").setAttribute("aria-label", isFav ? "Remove from favourites" : "Add to favourites");
+  $("sheetFav").title = isFav ? "Remove from favourites" : "Favourite";
+  $("sheetHide").querySelector(".action-icon").textContent = isHidden ? "↶" : "⊘";
+  $("sheetHide").querySelector(".action-label").textContent = isHidden ? "Restore" : "Block";
+  $("sheetHide").setAttribute("aria-label", isHidden ? "Restore station" : "Block station");
+  $("sheetHide").title = isHidden ? "Restore station" : "Block station";
+  $("sheetHide").disabled = false;
+  $("sheetToggle").querySelector(".action-icon").textContent = audio.paused ? "▶" : "Ⅱ";
+  $("sheetToggle").querySelector(".action-label").textContent = audio.paused ? "Play" : "Pause";
+  $("sheetToggle").disabled = false;
+  $("sheetFav").disabled = false;
+  $("livePill").textContent = audio.error ? "● STREAM ERROR" : audio.paused ? "● RADIO READY" : "● LIVE RADIO";
+  $("miniPlayer").classList.toggle("is-playing", !audio.paused && !audio.error);
+}
+
+function openPlayerSheet() {
+  updateExpandedPlayer();
+  $("playerSheetBg").classList.add("open");
+}
+function closePlayerSheet() { $("playerSheetBg").classList.remove("open"); }
+$("miniPlayerOpen").addEventListener("click", (event) => {
+  if (event.target.closest("button")) return;
+  openPlayerSheet();
+});
+$("miniPlayerOpen").addEventListener("keydown", (event) => {
+  if (event.target.closest("button")) return;
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openPlayerSheet();
+  }
+});
+$("playerSheetClose").onclick = closePlayerSheet;
+$("openAbout").onclick = () => { $("settingsbg").style.display = "none"; $("aboutbg").style.display = "flex"; };
+$("aboutDone").onclick = () => { $("aboutbg").style.display = "none"; $("settingsbg").style.display = "flex"; };
+$("aboutbg").onclick = (event) => {
+  if (event.target === $("aboutbg")) {
+    $("aboutbg").style.display = "none";
+    $("settingsbg").style.display = "flex";
+  }
+};
+
+$("playerSheetBg").onclick = (event) => { if (event.target === $("playerSheetBg")) closePlayerSheet(); };
+
+// Touch-friendly player gestures: swipe up to expand, swipe down to collapse.
+let miniTouchStartY = null;
+$("miniPlayer").addEventListener("touchstart", (event) => {
+  miniTouchStartY = event.changedTouches[0].clientY;
+}, {passive:true});
+$("miniPlayer").addEventListener("touchend", (event) => {
+  if (miniTouchStartY === null) return;
+  const delta = event.changedTouches[0].clientY - miniTouchStartY;
+  if (delta < -22) openPlayerSheet();
+  miniTouchStartY = null;
+}, {passive:true});
+let sheetTouchStartY = null;
+$("playerSheet").addEventListener("touchstart", (event) => {
+  sheetTouchStartY = event.changedTouches[0].clientY;
+}, {passive:true});
+$("playerSheet").addEventListener("touchend", (event) => {
+  if (sheetTouchStartY === null) return;
+  const delta = event.changedTouches[0].clientY - sheetTouchStartY;
+  if (delta > 32) closePlayerSheet();
+  sheetTouchStartY = null;
+}, {passive:true});
+
+$("sheetPrev").onclick = () => playAdjacentRecent(-1);
+$("sheetNext").onclick = () => playAdjacentRecent(1);
+$("sheetToggle").onclick = () => $("toggle").click();
+$("sheetFav").onclick = () => $("playerfav").click();
+
+function stopSleepTimer(message = "Sleep timer cancelled.") {
+  if (sleepTimerId) clearTimeout(sleepTimerId);
+  if (sleepTickId) clearInterval(sleepTickId);
+  sleepTimerId = null; sleepTickId = null; sleepTimerEndsAt = 0;
+  $("sleepStatus").textContent = "Off · Keep listening";
+  $("sleepAction").textContent = "Start";
+  if (message) toast(message);
+}
+function startSleepTimer(minutes) {
+  if (sleepTimerId) clearTimeout(sleepTimerId);
+  if (sleepTickId) clearInterval(sleepTickId);
+  if (!minutes) { stopSleepTimer(""); return; }
+  sleepTimerEndsAt = Date.now() + minutes * 60000;
+  $("sleepAction").textContent = "Cancel";
+  const update = () => {
+    const left = Math.max(0, sleepTimerEndsAt - Date.now());
+    const mins = Math.floor(left / 60000), secs = Math.floor((left % 60000) / 1000);
+    $("sleepStatus").textContent = `Stops in ${mins}:${String(secs).padStart(2,"0")}`;
+  };
+  update(); sleepTickId = setInterval(update, 1000);
+  sleepTimerId = setTimeout(() => {
+    audio.pause(); stopSleepTimer("");
+    $("sleepStatus").textContent = "Playback stopped · Timer complete";
+    toast("Sleep timer finished. Good night! 🌙");
+  }, minutes * 60000);
+}
+$("sleepTimer").oninput = (event) => {
+  $("sleepMinutes").textContent = `${event.target.value} min`;
+};
+$("sleepAction").onclick = () => {
+  if (sleepTimerId) stopSleepTimer("Sleep timer cancelled.");
+  else startSleepTimer(Number($("sleepTimer").value));
+};
+
+function getAdjacentRecentStation(direction) {
+  if (!current || !filtered.length) return null;
+  const currentIndex = filtered.findIndex(station => stationKey(station) === stationKey(current));
+  if (currentIndex < 0) return null;
+  for (let step = 1; step <= filtered.length; step++) {
+    const index = (currentIndex + direction * step + filtered.length) % filtered.length;
+    const candidate = filtered[index];
+    if (candidate && candidate.url_stream) return candidate;
+  }
+  return null;
+}
+function playAdjacentRecent(direction) {
+  const station = getAdjacentRecentStation(direction);
+  if (!station) {
+    toast("No other recent station available.");
+    return;
+  }
+  playStation(station);
+}
+$("sheetHide").onclick = () => {
+  if (!current) return;
+  const id = stationKey(current);
+  if (hiddenStationIds.has(id)) {
+    hiddenStationIds.delete(id);
+    hiddenStationRecords = hiddenStationRecords.filter((station) => stationKey(station) !== id);
+    toast("Station restored.");
+  } else {
+    hiddenStationIds.add(id);
+    if (!stations.some((station) => stationKey(station) === id) &&
+        !hiddenStationRecords.some((station) => stationKey(station) === id)) hiddenStationRecords.push(current);
+    toast("Station hidden. You can restore it in Settings.");
+  }
+  savePreferences();
+  updateExpandedPlayer();
+  applyFilters();
+};
+
+
+
+
+
+/* 06 · SURPRISE ME
+   The pick is always taken from the currently filtered results.
+*/
+function surpriseMe() {
+  const playableStations = filtered.filter((station) => station.url_stream);
+
+  if (playableStations.length === 0) {
+    toast("No playable stations match your current filters.");
+    return;
+  }
+
+  const pick = playableStations[Math.floor(Math.random() * playableStations.length)];
+  playStation(pick);
+  toast(`Surprise pick: ${pick.name || "A new station"}`);
+}
+
+function setView(nextView) {
+  view = nextView;
+
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+
+  applyFilters();
+}
+
+document.querySelectorAll("[data-view]").forEach((button) => {
+  button.onclick = () => setView(button.dataset.view);
+});
+
+$("surprise").onclick = surpriseMe;
+
+$("reset").onclick = () => {
+  $("query").value = "";
+  $("country").value = "";
+  $("language").value = "";
+  $("genre").value = "";
+  $("sort").value = "name";
+  applyFilters();
+};
+
+$("query").oninput = () => {
+  clearTimeout(window.airwaveSearchDelay);
+  saveBrowsePreferences();
+  window.airwaveSearchDelay = setTimeout(applyFilters, 140);
+};
+
+["country", "language", "genre", "sort"].forEach((id) => {
+  $(id).onchange = () => {
+    if (id === "country") $("countryPickLabel").textContent = $("country").selectedOptions[0]?.text || "All countries";
+    if (id === "language") $("languagePickLabel").textContent = $("language").selectedOptions[0]?.text || "All languages";
+    if (id === "genre") $("genrePickLabel").textContent = $("genre").selectedOptions[0]?.text || "All genres";
+    applyFilters();
+  };
+});
+
+$("more").onclick = renderStations;
+
+
+let pickerMode = "country", pickerLetter = "";
+function openAlphabetPicker(mode) {
+  pickerMode = mode;
+  const select = $(mode);
+  const title = mode === "country" ? "Choose a country" : mode === "language" ? "Choose a language" : "Choose a genre";
+  $("pickerTitle").textContent = title;
+  $("pickerSearch").value = "";
+  const options = [...select.options].filter(option => option.value);
+  const letters = [...new Set(options.map(option => option.text.trim().charAt(0).toUpperCase()).filter(letter => /^[A-Z]$/.test(letter)))].sort();
+  pickerLetter = letters[0] || "";
+  $("pickerAlphabet").replaceChildren();
+  letters.forEach(letter => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = letter;
+    button.classList.toggle("active", letter === pickerLetter);
+    button.onclick = () => { pickerLetter = letter; renderPickerOptions(); };
+    $("pickerAlphabet").append(button);
+  });
+  renderPickerOptions();
+  $("pickerBackdrop").classList.add("open");
+}
+function renderPickerOptions() {
+  const select = $(pickerMode), query = $("pickerSearch").value.trim().toLowerCase();
+  const options = [...select.options].filter((option) =>
+    option.value && (
+      !query
+        ? option.text.trim().toUpperCase().startsWith(pickerLetter)
+        : option.text.toLowerCase().includes(query)
+    )
+  );
+  $("pickerOptions").replaceChildren();
+  const allButton = document.createElement("button");
+  allButton.type = "button";
+  allButton.textContent = pickerMode === "country" ? "All countries" : pickerMode === "language" ? "All languages" : "All genres";
+  allButton.classList.toggle("selected", !select.value);
+  allButton.onclick = () => {
+    select.value = "";
+    $(pickerMode+"PickLabel").textContent = allButton.textContent;
+    $("pickerBackdrop").classList.remove("open");
+    applyFilters();
+  };
+  $("pickerOptions").append(allButton);
+  options.slice(0,180).forEach(option => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option.text;
+    button.classList.toggle("selected", option.value === select.value);
+    button.onclick = () => {
+      select.value = option.value;
+      $(pickerMode+"PickLabel").textContent = option.text;
+      $("pickerBackdrop").classList.remove("open");
+      applyFilters();
+    };
+    $("pickerOptions").append(button);
+  });
+  if (!options.length) {
+    const empty = document.createElement("small"); empty.textContent = "No matches"; empty.style.color = "var(--muted)";
+    $("pickerOptions").append(empty);
+  }
+  [...$("pickerAlphabet").children].forEach(button => button.classList.toggle("active", button.textContent === pickerLetter));
+}
+$("countryPick").onclick = () => openAlphabetPicker("country");
+$("languagePick").onclick = () => openAlphabetPicker("language");
+$("pickerSearch").oninput = renderPickerOptions;
+$("pickerClose").onclick = () => $("pickerBackdrop").classList.remove("open");
+$("pickerBackdrop").onclick = event => { if (event.target === $("pickerBackdrop")) $("pickerBackdrop").classList.remove("open"); };
+$("genrePick").onclick = () => openAlphabetPicker("genre");
+$("reset").addEventListener("click", () => {
+  $("countryPickLabel").textContent = "All countries";
+  $("languagePickLabel").textContent = "All languages";
+  $("genrePickLabel").textContent = "All genres";
+});
+
+/* 07 · SETTINGS + INTERFACE LANGUAGE */
+function openSettings() {
+  renderHiddenSettings();
+  $("settingsbg").style.display = "flex";
+}
+
+function closeSettings() {
+  $("settingsbg").style.display = "none";
+}
+
+$("settings").onclick = openSettings;
+$("close").onclick = closeSettings;
+
+$("settingsbg").onclick = (event) => {
+  if (event.target === $("settingsbg")) closeSettings();
+};
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if ($("pickerBackdrop").classList.contains("open")) {
+    $("pickerBackdrop").classList.remove("open");
+    return;
+  }
+  if ($("playerSheetBg").classList.contains("open")) {
+    closePlayerSheet();
+    return;
+  }
+  if ($("aboutbg").style.display === "flex") {
+    $("aboutbg").style.display = "none";
+    $("settingsbg").style.display = "flex";
+    return;
+  }
+  closeSettings();
+});
+
+$("theme").onchange = (event) => applyTheme(event.target.value);
+
+function applyInterfaceLanguage(language, shouldRender = true) {
+  ui = language === "ta" ? "ta" : "en";
+  safeStorageSet("airwave-language", ui);
+  $("uilang").value = ui;
+  $("query").placeholder = ui === "ta"
+    ? "வானொலி, வகை, நாடு தேடுங்கள்…"
+    : "Search stations, genres, countries…";
+  saveBrowsePreferences();
+  if (shouldRender) renderStations();
+}
+
+$("uilang").onchange = (event) => {
+  applyInterfaceLanguage(event.target.value);
+};
+
+function persistAirwaveState() {
+  try { saveBrowsePreferences(); } catch (_) {}
+  try { savePreferences(); } catch (_) {}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") persistAirwaveState();
+});
+window.addEventListener("pagehide", persistAirwaveState);
+
+/* 08 · IMPORT / EXPORT BACKUP
+   Backups contain favourites only and merge without duplicates.
+   Existing catalogue stations are matched by station UUID or stream URL.
+   Favourite stations outside the catalogue are retained locally and remain playable.
+*/
+function downloadFile(filename, contents, mimeType) {
+  const file = new Blob([contents], { type: mimeType });
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  link.style.display = "none";
+  document.body.append(link);
+  link.click();
+  link.remove();
+
+  // Give mobile browsers enough time to begin the download before revoking it.
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+function exportFavourites() {
+  const known = allKnownStations();
+  const favouriteStations = known.filter((station) => favs.has(stationKey(station)));
+  const backup = {
+    app: "Airwave",
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    favourites: favouriteStations
+  };
+
+  downloadFile(
+    "airwave-favourites.json",
+    JSON.stringify(backup, null, 2),
+    "application/json"
+  );
+  toast(`${favouriteStations.length} favourites exported.`);
+}
+
+function importFavouritesFile(file) {
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      const favouriteList = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.favourites)
+          ? parsed.favourites
+          : Array.isArray(parsed?.stations)
+            ? parsed.stations
+            : null;
+
+      if (!favouriteList) {
+        throw new Error("This file does not contain an Airwave favourites backup.");
+      }
+
+      const catalogueKeys = new Set(stations.map(stationKey));
+      const importedKeys = new Set(importedFavouriteStations.map(stationKey));
+      let addedToFavourites = 0;
+      let savedOutsideCatalogue = 0;
+      let skipped = 0;
+
+      favouriteList.forEach((station) => {
+        if (!station || typeof station.url_stream !== "string" || !isHttpUrl(station.url_stream)) {
+          skipped += 1;
+          return;
+        }
+
+        const id = stationKey(station);
+        if (!id) {
+          skipped += 1;
+          return;
+        }
+
+        if (!favs.has(id)) {
+          favs.add(id);
+          addedToFavourites += 1;
+        }
+
+        if (!catalogueKeys.has(id) && !importedKeys.has(id)) {
+          importedFavouriteStations.push(station);
+          importedKeys.add(id);
+          savedOutsideCatalogue += 1;
+        }
+      });
+
+      savePreferences();
+      applyFilters();
+
+      const details = savedOutsideCatalogue
+        ? `, including ${savedOutsideCatalogue} outside the catalogue`
+        : "";
+      const skippedDetails = skipped ? ` · ${skipped} invalid entries skipped` : "";
+      toast(`${addedToFavourites} favourites added${details}${skippedDetails}.`);
+    } catch (error) {
+      toast(`Import failed: ${error.message}`);
+    }
+  };
+
+  reader.onerror = () => toast("Could not read that file.");
+  reader.readAsText(file);
+}
+
+$("export2").onclick = exportFavourites;
+
+function chooseFavouriteFile() {
+  $("file").click();
+}
+
+$("import2").onclick = chooseFavouriteFile;
+function renderHiddenSettings() {
+  const host = $("hiddenStationManager");
+  if (!host) return;
+  host.replaceChildren();
+  const hidden = allKnownStations().filter((station) => hiddenStationIds.has(stationKey(station)));
+  $("hiddenCount").textContent = `${hidden.length} station${hidden.length === 1 ? "" : "s"} hidden`;
+  if (!hidden.length) {
+    const empty = document.createElement("div");
+    empty.className = "hidden-empty";
+    empty.textContent = "No hidden stations. Stations you hide will appear here.";
+    host.append(empty);
+    return;
+  }
+  hidden.sort((a,b) => stationCollator.compare(a.name || "", b.name || ""));
+  hidden.forEach((station) => {
+    const row = document.createElement("div"); row.className = "hidden-row";
+    const name = document.createElement("span"); name.textContent = station.name || "Unnamed station";
+    const restore = document.createElement("button"); restore.type = "button"; restore.textContent = "Restore";
+    restore.onclick = () => {
+      const id = stationKey(station); hiddenStationIds.delete(id);
+      hiddenStationRecords = hiddenStationRecords.filter((item) => stationKey(item) !== id);
+      savePreferences(); renderHiddenSettings(); applyFilters(); toast("Station restored.");
+    };
+    row.append(name, restore); host.append(row);
+  });
+}
+
+$("file").onchange = (event) => {
+  const file = event.target.files[0];
+  if (file) importFavouritesFile(file);
+  event.target.value = "";
+};
+
+$("clear").onclick = () => {
+  if (!confirm("Clear saved favourites, hidden stations and listening history?")) return;
+
+  favs.clear();
+  recent = [];
+  importedFavouriteStations = [];
+  hiddenStationIds.clear();
+  hiddenStationRecords = [];
+  savePreferences();
+  renderHiddenSettings();
+  applyFilters();
+  if (current) {
+    $("playerfav").textContent = "♡";
+    updateExpandedPlayer();
+  }
+  toast("Saved favourites and history cleared.");
+};
+
+/* 09 · LOAD CATALOGUE + BUILD FILTER MENUS */
+function addSelectOptions(selectId, values, formatLabel) {
+  const select = $(selectId);
+  const sortedValues = [...values].sort((a, b) => stationCollator.compare(a, b));
+  const fragment = document.createDocumentFragment();
+  for (const value of sortedValues) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = formatLabel(value);
+    fragment.append(option);
+  }
+  select.append(fragment);
+}
+
+function yieldToBrowser() {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+async function loadCatalogue() {
+  const list = $("list");
+  const count = $("count");
+
+  try {
+    // Paint the Airwave shell and loading message before handling the large catalogue.
+    count.textContent = "Getting your radio stations ready…";
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await yieldToBrowser();
+
+    if (!("DecompressionStream" in window)) {
+      throw new Error("This browser does not support gzip decoding. Please use an updated Chrome browser.");
+    }
+
+    count.textContent = "Unpacking the station catalogue…";
+    await yieldToBrowser();
+
+    // Revalidate the small catalogue URL each visit; browsers can reuse a cached body on 304.
+    const catalogueResponse = await fetch("./stations.json.gz", { cache: "no-cache" });
+    if (!catalogueResponse.ok) {
+      throw new Error(`Could not download stations.json.gz (HTTP ${catalogueResponse.status}).`);
+    }
+
+    const compressedStream = catalogueResponse.body.pipeThrough(new DecompressionStream("gzip"));
+    const json = await new Response(compressedStream).text();
+    count.textContent = "Reading station details…";
+    await yieldToBrowser();
+
+    const parsed = JSON.parse(json);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      throw new Error("The external station catalogue is empty or invalid.");
+    }
+    stations = parsed.filter((station) =>
+      station && typeof station === "object" &&
+      typeof station.url_stream === "string" && isHttpUrl(station.url_stream) &&
+      typeof station.name === "string" && station.name.trim()
+    );
+    if (!stations.length) {
+      throw new Error("The catalogue downloaded, but it contains no usable stations.");
+    }
+    sortedCatalogue = stations.slice().sort((a, b) => stationCollator.compare(a.name || "", b.name || ""));
+
+    // Show real station cards immediately after parsing. Filter menus continue
+    // building in small batches while the page remains responsive.
+    applyTheme(safeStorageGet("airwave-theme", "midnight") || "midnight");
+    applyInterfaceLanguage(ui, false);
+    applyFilters();
+    await yieldToBrowser();
+
+    const countries = new Set();
+    const languages = new Set();
+    const genreCounts = new Map();
+    const ignoredTags = new Set([
+      "radio", "fm", "am", "webradio", "web radio", "online", "live",
+      "music", "música", "station", "broadcast", "stream", "internet radio"
+    ]);
+
+    // Process records in chunks so the browser can paint and respond between batches.
+    const chunkSize = 2500;
+    for (let start = 0; start < stations.length; start += chunkSize) {
+      const end = Math.min(start + chunkSize, stations.length);
+      for (let i = start; i < end; i += 1) {
+        const station = stations[i];
+        if (station.iso_3166_1) countries.add(station.iso_3166_1);
+        for (const language of stationLanguages(station)) languages.add(language);
+        for (const tag of stationTags(station.tags)) {
+          const genre = tag.toLowerCase();
+          if (genre.length < 2 || genre.length > 32 || genre.split(/\s+/).length > 4 || ignoredTags.has(genre)) continue;
+          genreCounts.set(genre, (genreCounts.get(genre) || 0) + 1);
+        }
+      }
+      await yieldToBrowser();
+    }
+
+    addSelectOptions("country", countries, countryName);
+    addSelectOptions("language", languages, languageName);
+
+    const popularGenres = [...genreCounts.entries()]
+      .filter(([, frequency]) => frequency >= 8)
+      .sort((a, b) => b[1] - a[1] || stationCollator.compare(a[0], b[0]))
+      .slice(0, 180)
+      .map(([genre]) => genre);
+    addSelectOptions("genre", popularGenres, (genre) => genre.replace(/\b\w/g, (letter) => letter.toUpperCase()));
+
+    // Enable persistence only after country, language and genre options exist.
+    browsePreferencesReady = true;
+    restoreBrowsePreferences();
+    applyFilters();
+  } catch (error) {
+    console.error("Airwave catalogue loading failed:", error);
+    count.textContent = "Airwave could not finish loading.";
+    list.replaceChildren();
+    const message = document.createElement("div");
+    message.className = "empty";
+    const explanation = document.createElement("p");
+    const reason = error && error.message ? error.message : "Unknown error";
+    explanation.textContent = `Catalogue loading failed: ${reason}. Check your connection and try again.`;
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "action secondary";
+    retry.textContent = "Retry loading";
+    retry.addEventListener("click", () => {
+      retry.disabled = true;
+      retry.textContent = "Retrying…";
+      loadCatalogue();
+    });
+    message.append(explanation, retry);
+    list.append(message);
+  }
+}
+
+window.addEventListener("error", (event) => {
+  console.error("Airwave runtime error:", event.error || event.message);
+});
+window.addEventListener("unhandledrejection", (event) => {
+  console.error("Airwave background task failed:", event.reason);
+});
+
+loadCatalogue();
+  </script>
+ </body>
+</html>
+
