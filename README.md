@@ -2,8 +2,6 @@
 
 ### Find Your Frequency!
 
-**Your lil corner of radio.**
-
 [![OPEN AIRWAVE · LISTEN LIVE](https://img.shields.io/badge/OPEN%20AIRWAVE-LISTEN%20LIVE-8B5CF6?style=for-the-badge&labelColor=171326)](https://prasannaone.github.io/Airwave/)
 
 ![Live](https://img.shields.io/badge/STATUS-LIVE-22C55E?style=flat-square)
