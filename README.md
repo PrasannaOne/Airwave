@@ -1,17 +1,12 @@
 <div align="center">
 
-# Airwave
+<h1><a href="https://prasannaone.github.io/Airwave/">🎧 OPEN AIRWAVE · LISTEN LIVE ↗</a></h1>
 
 ### Find your frequency.
 
-A little corner of the internet filled with radio.
-Discover stations from around the world and listen live, all in one clean, browser-based player.
+Your lil corner of radio. Explore stations from around the world and listen live in one simple, browser-based player.
 
-<a href="https://prasannaone.github.io/Airwave/">
-  <img src="https://img.shields.io/badge/🎧%20OPEN%20AIRWAVE-LISTEN%20LIVE-7655E8?style=for-the-badge&labelColor=171522&color=7655E8" alt="Open Airwave · Listen live" height="48">
-</a>
-
-[View source](https://github.com/PrasannaOne/Airwave)
+**Tap the big link above and you're on air.**
 
 </div>
 
@@ -19,37 +14,38 @@ Discover stations from around the world and listen live, all in one clean, brows
 
 ## What is Airwave?
 
-Airwave is a lightweight internet radio player built as a standalone web app. It brings a large directory of radio stations into one simple listening space, with quick discovery tools and a player that stays with you while you browse.
+Airwave is a lightweight internet radio player that brings a large directory of stations into one listening space. Find something familiar, explore somewhere new, or let Airwave pick a station for you.
 
-No account. No installation. No backend to run.
+No account. No installation. Just open it in your browser.
 
 ## Features
 
-- **Explore 63,168+ radio stations** from the bundled station catalogue.
-- **Find stations quickly** with search and country, language, and genre filters.
-- **Browse your way** with Explore, Favourites, Recent, and Hidden views.
-- **Surprise Me** with a random playable station from your current filtered results.
-- **Listen live** with a persistent mini-player and an expandable player sheet.
-- **Stay in control** with play/pause, previous/next station navigation, and a 5–60 minute sleep timer.
-- **Make it yours** with five themes: Midnight Purple, AMOLED Black, Ocean, Light, and Forest.
-- **Choose your display language** with the English/Tamil setting.
-- **Keep your list tidy** by hiding stations and restoring them later.
-- **Back up favourites** with JSON import and export.
+- **Explore 63,168 radio stations** from a bundled Radio Browser catalogue.
+- **Search and filter** by station name, country, language, or genre.
+- **Browse your way** with Explore, Favourites, and Recent.
+- **Surprise Me** with a playable station from your current filtered results.
+- **Keep listening while you browse** with a persistent mini-player and an expandable player.
+- **Control playback** with play/pause and previous/next station navigation.
+- **Set a sleep timer** from 5 to 60 minutes.
+- **Make it yours** with Midnight Purple, AMOLED Black, Ocean, Light, and Forest themes.
+- **Choose your interface language** with English and Tamil options.
+- **Hide and restore stations** from Settings whenever you want a cleaner list.
+- **Back up your favourites** with JSON import and export.
 
 ## Getting started
 
-1. Open [Airwave](https://prasannaone.github.io/Airwave/).
-2. Search for a station, or browse using the filters.
+1. [Open Airwave](https://prasannaone.github.io/Airwave/).
+2. Search for a station or explore with the country, language, and genre filters.
 3. Select a station to start listening.
-4. Save favourites, revisit recent stations, or let **Surprise Me** pick something for you.
+4. Save favourites, revisit recently played stations, or use **Surprise Me** to discover something random from your current results.
 
-Airwave needs an internet connection to load the station catalogue and play live streams. Use an up-to-date browser with gzip decompression support.
+Airwave needs an internet connection to load the station catalogue and play live streams. Use an up-to-date browser that supports gzip decompression.
 
 ## Your data
 
-Favourites, recently played stations, hidden stations, and browsing preferences are saved in your browser when local storage is available. They stay in that browser and are not automatically synced between devices.
+Favourites, recently played stations, hidden stations, and browsing preferences are saved in your browser when local storage is available. They are not automatically synced between devices.
 
-Use **Settings → Export** to download a JSON backup of your favourites. Importing a backup merges favourites without adding duplicates. Stations that are not in the bundled catalogue are kept separately and remain playable. Importing a backup does not modify the station catalogue.
+The JSON backup contains **favourites only**. Importing a backup merges favourites without duplicates. Imported stations that are not in the bundled catalogue are kept separately and remain playable. Hidden stations, listening history, and preferences are not included in the backup.
 
 ## How it works
 
@@ -58,17 +54,17 @@ Airwave is a static, client-side web app built with:
 - HTML
 - CSS
 - Vanilla JavaScript
-- The browser's audio playback and storage capabilities
+- Browser audio playback and local storage
 
-The station catalogue is stored separately as `stations.json.gz` and loaded by `index.html` when the app starts. Keep both files in the same directory when hosting the app. The catalogue is based on [Radio Browser](https://www.radio-browser.info/); station streams are provided by the stations' own stream servers.
+The station catalogue is stored in the separate compressed file `stations.json.gz` and loaded by `index.html` when the app starts. Keep both files in the same directory when hosting your own copy.
 
-To host your own copy, place `index.html` and `stations.json.gz` together on any static web host that serves files over HTTP or HTTPS. Open the hosted `index.html` URL to use the app.
+The catalogue is based on [Radio Browser](https://www.radio-browser.info/). Radio streams are served by the stations' own stream servers, so availability and playback quality can vary by station.
 
 ## Credits
 
 The station directory is powered by [Radio Browser](https://www.radio-browser.info/).
 
-Airwave is an independent project and is not affiliated with Radio Browser or the stations listed in its catalogue. Stream availability and playback quality depend on each station's stream server.
+Airwave is an independent project and is not affiliated with Radio Browser or the stations listed in its catalogue.
 
 ---
 
@@ -76,6 +72,6 @@ Airwave is an independent project and is not affiliated with Radio Browser or th
 
 Made by **Prasanna** ❤️
 
-[Airwave](https://prasannaone.github.io/Airwave/) · [GitHub](https://github.com/PrasannaOne) · [Telegram](https://t.me/PrasannaOne)
+[Telegram](https://t.me/PrasannaOne)
 
 </div>
