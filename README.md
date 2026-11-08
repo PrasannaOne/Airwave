@@ -7,7 +7,11 @@
 A little corner of the internet filled with radio.
 Discover stations from around the world and listen live, all in one clean, browser-based player.
 
-[**▶ Open Airwave**](https://prasannaone.github.io/Airwave/) · [**View source**](https://github.com/PrasannaOne/Airwave)
+<a href="https://prasannaone.github.io/Airwave/">
+  <img src="https://img.shields.io/badge/🎧%20OPEN%20AIRWAVE-LISTEN%20LIVE-7655E8?style=for-the-badge&labelColor=171522&color=7655E8" alt="Open Airwave · Listen live" height="48">
+</a>
+
+[View source](https://github.com/PrasannaOne/Airwave)
 
 </div>
 
@@ -72,6 +76,6 @@ Airwave is an independent project and is not affiliated with Radio Browser or th
 
 Made by **Prasanna** ❤️
 
-[Airwave](https://prasannaone.github.io/Airwave/) · [GitHub](https://github.com/PrasannaOne) · [Telegram](https://t.me/PrasannaOne)
+[Airwave](https://prasannaone.github.io/Airwave/) · [Telegram](https://t.me/PrasannaOne)
 
 </div>
