@@ -1,8 +1,8 @@
 # 📻 AIRWAVE
 
-### THE WORLD ON AIR
+### Find Your Frequency!
 
-**Find your frequency. Your lil corner of radio.**
+**Your lil corner of radio.**
 
 [![OPEN AIRWAVE · LISTEN LIVE](https://img.shields.io/badge/OPEN%20AIRWAVE-LISTEN%20LIVE-8B5CF6?style=for-the-badge&labelColor=171326)](https://prasannaone.github.io/Airwave/)
 
@@ -102,6 +102,6 @@ To host your own copy, keep `index.html` and `stations.json.gz` together on a st
 
 [![TUNE IN · OPEN AIRWAVE](https://img.shields.io/badge/TUNE%20IN-OPEN%20AIRWAVE-8B5CF6?style=for-the-badge&labelColor=171326)](https://prasannaone.github.io/Airwave/)
 
-[GitHub](https://github.com/PrasannaOne) · [Telegram](https://t.me/PrasannaOne)
+ [Telegram](https://t.me/PrasannaOne)
 
 **Made by Prasanna ❤️**
