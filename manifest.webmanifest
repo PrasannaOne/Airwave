@@ -1,0 +1,35 @@
+{
+  "id": "./",
+  "name": "Airwave",
+  "short_name": "Airwave",
+  "description": "Find your frequency. Explore radio stations from around the world and listen live.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#0b0d14",
+  "theme_color": "#0b0d14",
+  "orientation": "any",
+  "lang": "en",
+  "categories": [
+    "music",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

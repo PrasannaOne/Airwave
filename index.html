@@ -30,6 +30,9 @@ FILE STRUCTURE
   filters, playback, player controls, settings, backup, and startup.
 - Data: stations.json.gz contains the compressed station catalogue. Replace
   that file to update station data; keep the filename and relative path.
+- PWA: manifest.webmanifest controls installation and app appearance. sw.js
+  caches the app shell and station catalogue for offline browsing. Live radio
+  streams are never cached and still require an internet connection.
 
 FEATURES
 - Search, country/language/genre filters, and alphabet picker.
@@ -41,16 +44,29 @@ FEATURES
   outside the catalogue remain separately saved and playable.
 
 The station catalogue is never changed by importing a favourites backup.
+
+PWA NOTES
+- Install Airwave from the browser menu or address-bar install control.
+- The first successful online visit caches the app shell and station catalogue.
+- Offline mode supports reopening and browsing cached stations; live streams
+  still require an internet connection.
 -->
 <!DOCTYPE html>
 <html lang="en">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="Airwave" name="apple-mobile-web-app-title"/>
   <meta content="#0b0d14" name="theme-color"/>
   <meta content="Prasanna" name="author"/>
   <meta content="Find your frequency. Explore 63,168+ internet radio stations and listen live with Airwave." name="description"/>
   <link href="https://prasannaone.github.io/Airwave/" rel="canonical"/>
+  <link href="./manifest.webmanifest" rel="manifest"/>
+  <link href="./icon-192.png" rel="icon" type="image/png" sizes="192x192"/>
+  <link href="./apple-touch-icon.png" rel="apple-touch-icon"/>
   <meta content="website" property="og:type"/>
   <meta content="Airwave" property="og:site_name"/>
   <meta content="Airwave · Find your frequency" property="og:title"/>
@@ -4630,6 +4646,18 @@ window.addEventListener("error", (event) => {
 window.addEventListener("unhandledrejection", (event) => {
   console.error("Airwave background task failed:", event.reason);
 });
+
+/* 10B · PROGRESSIVE WEB APP
+   Cache the app shell and catalogue for offline browsing. Radio streams remain
+   network-only and are never intercepted or cached by the service worker.
+*/
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js", { scope: "./" })
+      .then((registration) => registration.update().catch(() => {}))
+      .catch((error) => console.warn("Airwave offline support could not start:", error));
+  });
+}
 
 loadCatalogue();
   </script>
