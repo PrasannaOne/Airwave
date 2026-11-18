@@ -60,7 +60,7 @@ PWA NOTES
   <meta content="yes" name="apple-mobile-web-app-capable"/>
   <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
   <meta content="Airwave" name="apple-mobile-web-app-title"/>
-  <meta content="#0b0d14" name="theme-color"/>
+  <meta content="#10111a" name="theme-color"/>
   <meta content="Prasanna" name="author"/>
   <meta content="Find your frequency. Explore 63,168+ internet radio stations and listen live with Airwave." name="description"/>
   <link href="https://prasannaone.github.io/Airwave/" rel="canonical"/>
@@ -182,6 +182,7 @@ button:focus-visible,input:focus-visible,select:focus-visible {
   gap: 7px;
 }
 .iconbtn {
+  text-decoration: none;
   height: 48px;
   min-width: 48px;
   padding: 0 11px;
@@ -413,14 +414,10 @@ button:focus-visible,input:focus-visible,select:focus-visible {
   border: 1px dashed var(--line);
   border-radius: 16px;
 }
-.more {
+.load-sentinel {
   width: 100%;
-  margin-top: 12px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  background: var(--surface);
-  color: var(--text);
+  height: 1px;
+  pointer-events: none;
 }
 .player {
   position: fixed;
@@ -2810,7 +2807,15 @@ body.player-ready .back-to-top {
 .hidden-settings summary::-webkit-details-marker {
   display: none;
 }
-  </style>
+  /* Clear but restrained separation between the catalogue and mini-player. */
+.player {
+  border-top: 1px solid #626a79;
+  box-shadow: 0 -5px 18px rgba(0, 0, 0, .12);
+}
+body[data-theme="light"] .player {
+  border-top-color: #c4c9d3;
+}
+</style>
  </head>
  <body>
   <div class="app">
@@ -2830,12 +2835,15 @@ body.player-ready .back-to-top {
      </div>
     </div>
     <div class="head-actions">
-     <button class="iconbtn" id="settings" title="Settings">
-      <svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="22">
-       <circle cx="12" cy="12" r="3">
-       </circle>
-       <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6.3v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2H15v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1z">
-       </path>
+     <a class="iconbtn" href="https://prasannaone.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open PrasannaOne website" title="PrasannaOne">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+      </svg>
+     </a>
+     <button class="iconbtn" id="settings" type="button" aria-label="Settings" title="Settings">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <circle cx="12" cy="12" r="3" />
+       <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6.3v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2H15v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1z" />
       </svg>
      </button>
      <button aria-label="Share Airwave" class="iconbtn" id="share" title="Share Airwave">
@@ -2962,9 +2970,7 @@ body.player-ready .back-to-top {
      </span>
     </div>
    </div>
-   <button class="more" hidden="" id="more">
-    Load more
-   </button>
+   <div aria-hidden="true" class="load-sentinel" id="loadSentinel" hidden></div>
   </div>
   <!-- 05 · MINI PLAYER -->
   <div class="player" id="miniPlayer">
@@ -2990,9 +2996,6 @@ body.player-ready .back-to-top {
       </span>
      </small>
     </div>
-    <button aria-label="Favourite station" class="secondary" disabled="" id="playerfav">
-     ♡
-    </button>
     <button aria-label="Play or pause" disabled="" id="toggle">
      ▶
     </button>
@@ -3137,25 +3140,7 @@ body.player-ready .back-to-top {
         </option>
        </select>
       </div>
-      <div class="setting">
-       <div class="setting-copy">
-        <label for="uilang">
-         Language
-        </label>
-        <small>
-         App display language
-        </small>
-       </div>
-       <select id="uilang">
-        <option value="en">
-         English
-        </option>
-        <option value="ta">
-         தமிழ்
-        </option>
-       </select>
-      </div>
-     </section>
+</section>
      <section class="settings-group">
       <h4>
        Backup &amp; data
@@ -3422,9 +3407,10 @@ body.player-ready .back-to-top {
    Keep the sections below in place when editing features.
    ========================================================== */
 
-/* 01 · EXTERNAL STATION CATALOGUE
-   Keep stations.json.gz beside this HTML file in the same repository.
-   The catalogue is fetched and unpacked when Airwave starts.
+/* 01 · STATION CATALOGUE
+   The GitHub/PWA build fetches stations.json.gz from beside this HTML file.
+   The standalone build embeds that exact compressed catalogue in this document.
+   Both builds unpack the same catalogue when Airwave starts.
 */
 
 /* 02 · APP STATE + SMALL HELPERS */
@@ -3459,11 +3445,12 @@ let hiddenStationIds = new Set(loadSavedArray("airwave-hidden-ids"));
 let hiddenStationRecords = loadSavedArray("airwave-hidden-records");
 let filtered = [];
 let shown = 0;
+let stationLoaderObserver = null;
+let stationPageLoading = false;
 let view = "all";
 let current = null;
 let favs = new Set(loadSavedArray("airwave-favs"));
 let recent = loadSavedArray("airwave-recent");
-let ui = safeStorageGet("airwave-language", "en") || "en";
 let toastTimer = null;
 
 function loadSavedArray(key) {
@@ -3558,8 +3545,7 @@ function saveBrowsePreferences() {
     genre: $("genre").value,
     sort: $("sort").value,
     view,
-    theme: safeStorageGet("airwave-theme", "midnight"),
-    languageUI: ui
+    theme: safeStorageGet("airwave-theme", "midnight")
   }));
 }
 function restoreBrowsePreferences() {
@@ -3694,7 +3680,10 @@ function makeStationCard(station) {
   playButton.className = "smallbtn play";
   playButton.textContent = "▶";
   playButton.title = "Play station";
-  playButton.onclick = () => playStation(station);
+  playButton.dataset.stationKey = stationKey(station);
+  playButton.dataset.stationName = station.name || "station";
+  playButton.setAttribute("aria-label", `Play ${station.name || "station"}`);
+  playButton.onclick = () => toggleStationPlayback(station);
 
   actions.append(hideButton, favouriteButton, playButton);
   card.append(logo, info, actions);
@@ -3757,53 +3746,102 @@ function applyFilters() {
     filtered.sort((a, b) => stationCollator.compare(a.name || "", b.name || ""));
   }
 
-  shown = 0;
-  renderStations();
+  renderStations(true);
   saveBrowsePreferences();
-  if (current) {
-    $("playerfav").textContent = favs.has(stationKey(current)) ? "♥" : "♡";
-    updateExpandedPlayer();
-  }
+  if (current) updateExpandedPlayer();
 }
 
-function renderStations() {
-  const list = $("list");
-  list.replaceChildren();
+function refreshStationPlayButtons() {
+  const activeKey = current ? stationKey(current) : "";
+  const isPlaying = Boolean(activeKey && !audio.paused && !audio.error);
+  document.querySelectorAll("#list .smallbtn.play").forEach((button) => {
+    const active = isPlaying && button.dataset.stationKey === activeKey;
+    const name = button.dataset.stationName || "station";
+    button.textContent = active ? "Ⅱ" : "▶";
+    button.title = active ? "Pause station" : "Play station";
+    button.setAttribute("aria-label", `${active ? "Pause" : "Play"} ${name}`);
+  });
+}
 
-  const page = filtered.slice(0, shown + PAGE_SIZE);
-  shown = page.length;
-  page.forEach((station) => list.append(makeStationCard(station)));
+function renderStations(reset = true) {
+  const list = $("list");
+  const sentinel = $("loadSentinel");
+  if (reset) {
+    shown = 0;
+    list.replaceChildren();
+    if (stationLoaderObserver) stationLoaderObserver.unobserve(sentinel);
+  }
+
+  const page = filtered.slice(shown, shown + PAGE_SIZE);
+  const fragment = document.createDocumentFragment();
+  page.forEach((station) => fragment.append(makeStationCard(station)));
+  list.append(fragment);
+  shown += page.length;
 
   const visibleCount = filtered.length.toLocaleString();
   const totalCount = stations.length.toLocaleString();
-  $("count").textContent = ui === "ta"
-    ? `${visibleCount} வானொலிகள் · மொத்தம் ${totalCount}`
-    : `${visibleCount} ${filtered.length === 1 ? "station" : "stations"} · ${totalCount} in catalogue`;
+  $("count").textContent = `${visibleCount} ${filtered.length === 1 ? "station" : "stations"} · ${totalCount} in catalogue`;
   $("heading").textContent = {
-    all: ui === "ta" ? "வானொலிகளை ஆராயுங்கள்" : "Explore stations",
-    favs: ui === "ta" ? "விருப்பமானவை" : "Your favourites",
-    recent: ui === "ta" ? "சமீபத்தில் கேட்டவை" : "Recently played",
-    hidden: ui === "ta" ? "மறைக்கப்பட்டவை" : "Hidden stations"
+    all: "Explore stations",
+    favs: "Your favourites",
+    recent: "Recently played",
+    hidden: "Hidden stations"
   }[view];
 
-  $("more").hidden = shown >= filtered.length;
-
-  if (page.length === 0) {
+  if (filtered.length === 0) {
     const empty = document.createElement("div");
     empty.className = "empty";
-    const emptyMessages = {
-      all: ui === "ta"
-        ? "வானொலிகள் இல்லை. தேடல் அல்லது வடிப்பான்களை மாற்றிப் பாருங்கள்."
-        : "No stations match. Try another search or adjust your filters.",
-      favs: ui === "ta"
-        ? "இன்னும் விருப்பமான வானொலிகள் இல்லை. நிலையங்களில் உள்ள இதயத்தைத் தட்டிச் சேமிக்கவும்."
-        : "No favourites yet. Tap the heart on any station to save it here.",
-      recent: ui === "ta" ? "இன்னும் எந்த வானொலியும் கேட்கப்படவில்லை." : "Your listening history will appear here after you play a station.",
-      hidden: ui === "ta" ? "மறைக்கப்பட்ட வானொலிகள் எதுவும் இல்லை." : "You haven't hidden any stations."
-    };
-    empty.textContent = emptyMessages[view] || emptyMessages.all;
+    empty.textContent = ({
+      all: "No stations match. Try another search or adjust your filters.",
+      favs: "No favourites yet. Tap the heart on any station to save it here.",
+      recent: "Your listening history will appear here after you play a station.",
+      hidden: "You haven't hidden any stations."
+    })[view] || "No stations to show.";
     list.append(empty);
   }
+
+  sentinel.hidden = shown >= filtered.length || filtered.length === 0;
+  refreshStationPlayButtons();
+  if (!sentinel.hidden && stationLoaderObserver) {
+    requestAnimationFrame(() => stationLoaderObserver && stationLoaderObserver.observe(sentinel));
+  }
+}
+
+function loadNextStationPage() {
+  if (stationPageLoading || shown >= filtered.length) return;
+  stationPageLoading = true;
+  requestAnimationFrame(() => {
+    renderStations(false);
+    stationPageLoading = false;
+  });
+}
+
+function setupStationAutoLoader() {
+  const sentinel = $("loadSentinel");
+  if ("IntersectionObserver" in window) {
+    stationLoaderObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      stationLoaderObserver.unobserve(sentinel);
+      loadNextStationPage();
+    }, { root: null, rootMargin: "850px 0px", threshold: 0 });
+    if (!sentinel.hidden) stationLoaderObserver.observe(sentinel);
+    return;
+  }
+
+  // Older browsers: a passive, animation-frame-throttled scroll fallback.
+  let pending = false;
+  const check = () => {
+    pending = false;
+    if (!sentinel.hidden && sentinel.getBoundingClientRect().top < window.innerHeight + 850) {
+      loadNextStationPage();
+    }
+  };
+  window.addEventListener("scroll", () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(check);
+  }, { passive: true });
+  window.addEventListener("resize", check, { passive: true });
 }
 
 
@@ -3876,6 +3914,22 @@ $("share").onclick = async () => {
 };
 
 /* 05 · RADIO PLAYER + LISTENING HISTORY */
+function toggleStationPlayback(station) {
+  const sameStation = current && stationKey(current) === stationKey(station);
+  if (sameStation && !audio.paused) {
+    audio.pause();
+    return;
+  }
+  if (sameStation && audio.paused && !audio.error && (audio.currentSrc || audio.src)) {
+    audio.play().catch(() => {
+      refreshStationPlayButtons();
+      toast("Stream unavailable or unsupported.");
+    });
+    return;
+  }
+  playStation(station);
+}
+
 function playStation(station) {
   if (!isHttpUrl(station.url_stream)) {
     toast("This station has no valid radio stream URL.");
@@ -3883,12 +3937,11 @@ function playStation(station) {
   }
 
   current = station;
+  refreshStationPlayButtons();
   document.body.classList.add("player-ready");
   $("trackname").textContent = station.name || "Unknown station";
   $("trackstate").textContent = "Connecting…";
   $("toggle").disabled = false;
-  $("playerfav").disabled = false;
-  $("playerfav").textContent = favs.has(stationKey(station)) ? "♥" : "♡";
   updatePlayerArtwork(station);
   updateExpandedPlayer();
   $("sheetToggle").querySelector(".action-icon").textContent = "Ⅱ";
@@ -3913,6 +3966,7 @@ function playStation(station) {
       $("sheetToggle").querySelector(".action-label").textContent = "Play";
       $("trackstate").textContent = "Stream unavailable or unsupported";
       $("miniPlayer").classList.remove("is-playing");
+      refreshStationPlayButtons();
       updateExpandedPlayer();
     });
 
@@ -3925,11 +3979,7 @@ function playStation(station) {
 
 $("toggle").onclick = () => {
   if (!current) return;
-  if (audio.paused) {
-    playStation(current);
-  } else {
-    audio.pause();
-  }
+  toggleStationPlayback(current);
 };
 
 audio.onplay = () => {
@@ -3938,6 +3988,7 @@ audio.onplay = () => {
   $("sheetToggle").querySelector(".action-label").textContent = "Pause";
   $("trackstate").textContent = "Now playing · Live radio";
   $("miniPlayer").classList.add("is-playing");
+  refreshStationPlayButtons();
   updateExpandedPlayer();
 };
 
@@ -3947,6 +3998,7 @@ audio.onpause = () => {
   $("sheetToggle").querySelector(".action-label").textContent = "Play";
   $("trackstate").textContent = current ? "Paused" : "Choose a station to start listening";
   $("miniPlayer").classList.remove("is-playing");
+  refreshStationPlayButtons();
   updateExpandedPlayer();
 };
 
@@ -3956,24 +4008,19 @@ audio.onerror = () => {
   $("sheetToggle").querySelector(".action-label").textContent = "Play";
   $("trackstate").textContent = "Stream unavailable or unsupported";
   $("miniPlayer").classList.remove("is-playing");
+  refreshStationPlayButtons();
   updateExpandedPlayer();
 };
 
-$("playerfav").onclick = () => {
+function toggleCurrentFavourite() {
   if (!current) return;
-
   const id = stationKey(current);
-  if (favs.has(id)) {
-    favs.delete(id);
-  } else {
-    favs.add(id);
-  }
-
+  if (favs.has(id)) favs.delete(id);
+  else favs.add(id);
   savePreferences();
-  $("playerfav").textContent = favs.has(id) ? "♥" : "♡";
   updateExpandedPlayer();
   applyFilters();
-};
+}
 
 /* 05B · EXPANDED PLAYER + SLEEP TIMER */
 let sleepTimerId = null;
@@ -4043,11 +4090,11 @@ $("miniPlayerOpen").addEventListener("keydown", (event) => {
 });
 $("playerSheetClose").onclick = closePlayerSheet;
 $("openAbout").onclick = () => { $("settingsbg").style.display = "none"; $("aboutbg").style.display = "flex"; };
-$("aboutDone").onclick = () => { $("aboutbg").style.display = "none"; $("settingsbg").style.display = "flex"; };
+$("aboutDone").onclick = () => { $("aboutbg").style.display = "none"; showSettingsFromTop(); };
 $("aboutbg").onclick = (event) => {
   if (event.target === $("aboutbg")) {
     $("aboutbg").style.display = "none";
-    $("settingsbg").style.display = "flex";
+    showSettingsFromTop();
   }
 };
 
@@ -4078,7 +4125,7 @@ $("playerSheet").addEventListener("touchend", (event) => {
 $("sheetPrev").onclick = () => playAdjacentRecent(-1);
 $("sheetNext").onclick = () => playAdjacentRecent(1);
 $("sheetToggle").onclick = () => $("toggle").click();
-$("sheetFav").onclick = () => $("playerfav").click();
+$("sheetFav").onclick = toggleCurrentFavourite;
 
 function stopSleepTimer(message = "Sleep timer cancelled.") {
   if (sleepTimerId) clearTimeout(sleepTimerId);
@@ -4211,9 +4258,6 @@ $("query").oninput = () => {
   };
 });
 
-$("more").onclick = renderStations;
-
-
 let pickerMode = "country", pickerLetter = "";
 function openAlphabetPicker(mode) {
   pickerMode = mode;
@@ -4288,10 +4332,19 @@ $("reset").addEventListener("click", () => {
   $("genrePickLabel").textContent = "All genres";
 });
 
-/* 07 · SETTINGS + INTERFACE LANGUAGE */
+/* 07 · SETTINGS */
+function showSettingsFromTop() {
+  $("settingsbg").style.display = "flex";
+  const scroller = $("settingsbg").querySelector(".settings-scroll");
+  if (scroller) {
+    scroller.scrollTop = 0;
+    requestAnimationFrame(() => { scroller.scrollTop = 0; });
+  }
+}
+
 function openSettings() {
   renderHiddenSettings();
-  $("settingsbg").style.display = "flex";
+  showSettingsFromTop();
 }
 
 function closeSettings() {
@@ -4317,28 +4370,13 @@ document.addEventListener("keydown", (event) => {
   }
   if ($("aboutbg").style.display === "flex") {
     $("aboutbg").style.display = "none";
-    $("settingsbg").style.display = "flex";
+    showSettingsFromTop();
     return;
   }
   closeSettings();
 });
 
 $("theme").onchange = (event) => applyTheme(event.target.value);
-
-function applyInterfaceLanguage(language, shouldRender = true) {
-  ui = language === "ta" ? "ta" : "en";
-  safeStorageSet("airwave-language", ui);
-  $("uilang").value = ui;
-  $("query").placeholder = ui === "ta"
-    ? "வானொலி, வகை, நாடு தேடுங்கள்…"
-    : "Search stations, genres, countries…";
-  saveBrowsePreferences();
-  if (shouldRender) renderStations();
-}
-
-$("uilang").onchange = (event) => {
-  applyInterfaceLanguage(event.target.value);
-};
 
 function persistAirwaveState() {
   try { saveBrowsePreferences(); } catch (_) {}
@@ -4504,10 +4542,7 @@ $("clear").onclick = () => {
   savePreferences();
   renderHiddenSettings();
   applyFilters();
-  if (current) {
-    $("playerfav").textContent = "♡";
-    updateExpandedPlayer();
-  }
+  if (current) updateExpandedPlayer();
   toast("Saved favourites and history cleared.");
 };
 
@@ -4546,13 +4581,25 @@ async function loadCatalogue() {
     count.textContent = "Unpacking the station catalogue…";
     await yieldToBrowser();
 
-    // Revalidate the small catalogue URL each visit; browsers can reuse a cached body on 304.
-    const catalogueResponse = await fetch("./stations.json.gz", { cache: "no-cache" });
-    if (!catalogueResponse.ok) {
-      throw new Error(`Could not download stations.json.gz (HTTP ${catalogueResponse.status}).`);
+    // The standalone build carries the same gzip catalogue inside this HTML file.
+    // The PWA build fetches stations.json.gz as a separate, cache-refreshable asset.
+    const embeddedCatalogue = $("airwaveEmbeddedCatalogue");
+    let compressedBody;
+    if (embeddedCatalogue) {
+      const base64 = embeddedCatalogue.textContent.trim().replace(/\s+/g, "");
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+      compressedBody = new Blob([bytes]).stream();
+    } else {
+      const catalogueResponse = await fetch("./stations.json.gz", { cache: "no-cache" });
+      if (!catalogueResponse.ok) {
+        throw new Error(`Could not download stations.json.gz (HTTP ${catalogueResponse.status}).`);
+      }
+      compressedBody = catalogueResponse.body;
     }
 
-    const compressedStream = catalogueResponse.body.pipeThrough(new DecompressionStream("gzip"));
+    const compressedStream = compressedBody.pipeThrough(new DecompressionStream("gzip"));
     const json = await new Response(compressedStream).text();
     count.textContent = "Reading station details…";
     await yieldToBrowser();
@@ -4574,7 +4621,6 @@ async function loadCatalogue() {
     // Show real station cards immediately after parsing. Filter menus continue
     // building in small batches while the page remains responsive.
     applyTheme(safeStorageGet("airwave-theme", "midnight") || "midnight");
-    applyInterfaceLanguage(ui, false);
     applyFilters();
     await yieldToBrowser();
 
@@ -4651,14 +4697,15 @@ window.addEventListener("unhandledrejection", (event) => {
    Cache the app shell and catalogue for offline browsing. Radio streams remain
    network-only and are never intercepted or cached by the service worker.
 */
-if ("serviceWorker" in navigator) {
+if (!$("airwaveEmbeddedCatalogue") && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js", { scope: "./" })
+    navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" })
       .then((registration) => registration.update().catch(() => {}))
       .catch((error) => console.warn("Airwave offline support could not start:", error));
   });
 }
 
+setupStationAutoLoader();
 loadCatalogue();
   </script>
  </body>

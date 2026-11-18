@@ -4,7 +4,7 @@
  */
 "use strict";
 
-const CACHE_NAME = "airwave-pwa-v2";
+const CACHE_NAME = "airwave-pwa-v3-20261117";
 const CACHE_PREFIX = "airwave-pwa-";
 const APP_SHELL = [
   "./",

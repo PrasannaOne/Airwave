@@ -35,7 +35,6 @@ Search by station name, country, language, or genre. Save favourites, revisit re
 | 🎛️ | **Expanded player** | Access playback controls and previous/next station navigation. |
 | 🌙 | **Sleep timer** | Set playback to stop after 5–60 minutes. |
 | 🙈 | **Hide stations** | Hide stations and restore them later from Settings. |
-| 🌐 | **English & Tamil** | Choose your interface language. |
 | 🎨 | **Five themes** | Switch the look to match your mood. |
 | 📦 | **Favourites backup** | Import and export favourites with a JSON file. |
 
